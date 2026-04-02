@@ -9,6 +9,7 @@ from pydantic import BaseModel
 import json
 import os
 from database import products
+from database import products
 print(f"Total products: {len(products)}")
 
 
