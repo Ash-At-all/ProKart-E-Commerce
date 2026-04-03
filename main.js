@@ -1,4 +1,4 @@
-const API_BASE = 'http://127.0.0.1:8000';
+const API_BASE = 'https://prokart-e-commerce.onrender.com';
 let cart = [];
 let currentFilter = 'all';
 
