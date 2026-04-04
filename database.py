@@ -856,7 +856,7 @@ products = [
   "rating": 4.3,
   "reviews": 12000,
   "badge": "Sale",
-  "image": "https://rukminim2.flixcart.com/image/312/312/xif0q/headphone/n/s/g/-original-imaghx8hggzhmhch.jpeg?q=70"
+  "image": "https://th.bing.com/th/id/OIP.44ciNE8XxJXm84XpFy4NggHaLd?w=129&h=200&c=7&r=0&o=7&dpr=1.3&pid=1.7&rm=3"
   },
   {
   "id": 203,
@@ -889,7 +889,7 @@ products = [
   "rating": 4.0,
   "reviews": 98000,
   "badge": "Hot",
-  "image": "https://rukminim2.flixcart.com/image/312/312/xif0q/headphone/e/o/q/-original-imagh4zhhzhzhzhz.jpeg?q=70"
+  "image": "https://th.bing.com/th/id/OIP.uMky5HH9Dq6smht3ZlL3qgHaHS?w=199&h=195&c=7&r=0&o=7&dpr=1.3&pid=1.7&rm=3"
   },
   {
   "id": 206,
