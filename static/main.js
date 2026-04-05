@@ -13,12 +13,16 @@ async function fetchProducts(category = 'all') {
   }
 }
 
+function shuffleArray(arr) {
+  return arr.sort(() => Math.random() - 0.5);
+}
+
 async function renderProducts(filter = 'all') {
   allProducts = await fetchProducts(filter);
+  allProducts = shuffleArray(allProducts); // ADD
   visibleCount = 24;
   displayProducts();
 }
-
 function displayProducts() {
   const grid = document.getElementById('productGrid');
   const visible = allProducts.slice(0, visibleCount);
