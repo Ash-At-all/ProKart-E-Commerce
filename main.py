@@ -1,20 +1,16 @@
 from fastapi import FastAPI, Request
-from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.templating import Jinja2Templates
 import uvicorn
-from typing import Optional
-from pydantic import BaseModel
+from typing import Dict
 import json
 import os
+
 from database import products
-print(f"Total products: {len(products)}")
 
+app = FastAPI(title="ProKart API", version="2.0.0")
 
-app = FastAPI(title="ProKart API", version="1.0.0")
-
-# CORS middleware
+# ✅ CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -23,35 +19,34 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# COMMENT OUT OR REMOVE THIS LINE:
-# app.mount("/static", StaticFiles(directory="static"), name="static")
+# ✅ USER-BASED CART (IMPORTANT)
+cart_data: Dict[int, dict] = {}
 
-templates = Jinja2Templates(directory="templates")
-
-cart_data = {"items": [], "total": 0}
-
+# ---------------- HOME ----------------
 @app.get("/", response_class=HTMLResponse)
-async def read_root(request: Request):
-    """Serve your ProKart HTML"""
+async def read_root():
     try:
         with open("index.html", "r", encoding="utf-8") as f:
             return HTMLResponse(content=f.read())
-    except FileNotFoundError:
-        return HTMLResponse(content="Please place index.html in the root directory")
+    except:
+        return HTMLResponse(content="index.html not found")
 
-# Rest of your endpoints remain the same...
+# ---------------- PRODUCTS ----------------
 @app.get("/api/products")
 async def get_products(category: str = "all"):
     if category == "all":
         return {"products": products}
+    
     filtered = [p for p in products if p["category"] == category]
     return {"products": filtered}
 
+# ---------------- CATEGORIES ----------------
 @app.get("/api/categories")
 async def get_categories():
     categories = list(set(p["category"] for p in products))
     return {"categories": categories}
 
+# ---------------- STATS ----------------
 @app.get("/api/stats")
 async def get_stats():
     return {
@@ -61,31 +56,71 @@ async def get_stats():
         "reviews": 12000
     }
 
+# ---------------- ADD TO CART ----------------
 @app.post("/api/cart/add")
-async def add_to_cart(request: Request):
+async def add_to_cart(user_id: int, product_id: int):
     global cart_data
-    cart_data["items"].append({
-        "id": len(cart_data["items"]) + 1,
-        "name": "Sample Product",
-        "price": 9999
-    })
-    cart_data["total"] += 9999
-    return {"status": "added", "cart": cart_data}
 
-@app.get("/api/cart")
-async def get_cart():
-    return cart_data
+    # 🔍 Find product
+    product = next((p for p in products if p["id"] == product_id), None)
 
+    if not product:
+        return {"error": "Product not found"}
+
+    # 👤 Create cart for user if not exists
+    if user_id not in cart_data:
+        cart_data[user_id] = {"items": [], "total": 0}
+
+    # ➕ Add product
+    cart_data[user_id]["items"].append(product)
+
+    price = product.get("price", 0)
+    cart_data[user_id]["total"] += price
+
+    return {"status": "added ✅", "cart": cart_data[user_id]}
+
+# ---------------- GET CART ----------------
+@app.get("/api/cart/{user_id}")
+async def get_cart(user_id: int):
+    return cart_data.get(user_id, {"items": [], "total": 0})
+
+# ---------------- REMOVE FROM CART ----------------
+@app.delete("/api/cart/remove")
+async def remove_from_cart(user_id: int, product_id: int):
+    if user_id not in cart_data:
+        return {"error": "Cart not found"}
+
+    cart = cart_data[user_id]
+    new_items = []
+    removed = False
+
+    for item in cart["items"]:
+        if item["id"] == product_id and not removed:
+            cart["total"] -= item.get("price", 0)
+            removed = True
+            continue
+        new_items.append(item)
+
+    cart["items"] = new_items
+
+    return {"status": "removed ✅", "cart": cart}
+
+# ---------------- CHECKOUT ----------------
 @app.post("/api/checkout")
-async def checkout(request: Request):
+async def checkout(user_id: int):
     global cart_data
-    cart_data = {"items": [], "total": 0}
-    return {"status": "success", "message": "Order placed successfully!"}
 
+    if user_id in cart_data:
+        cart_data[user_id] = {"items": [], "total": 0}
+
+    return {"status": "success ✅", "message": "Order placed successfully!"}
+
+# ---------------- HEALTH ----------------
 @app.get("/api/health")
 async def health_check():
-    return {"status": "ProKart API is running 🚀"}
+    return {"status": "ProKart API running 🚀"}
 
+# ---------------- RUN ----------------
 if __name__ == "__main__":
     print("🚀 ProKart Backend Starting...")
     uvicorn.run(app, host="0.0.0.0", port=8000, reload=True)
