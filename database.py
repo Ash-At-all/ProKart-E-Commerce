@@ -6,7 +6,7 @@ products = [
         "category": "phones",
         "price": 129999,
         "original": 144900,
-        "rating": 5,
+        "rating": 4.8,
         "image": "https://th.bing.com/th/id/OIP.QQ_AhWpil9Da-IVorp_uegHaJM?w=142&h=180&c=7&r=0&o=7&dpr=1.3&pid=1.7&rm=3",
         "reviews": 247,
         "badge": "New"
@@ -72,7 +72,7 @@ products = [
         "category": "audio",
         "price": 9999,
         "original": 11999,
-        "rating": 3,
+        "rating": 4.3,
         "image": "https://th.bing.com/th/id/OIP.zJAAicMrDze_TmT9ysefxgHaHa?w=172&h=180&c=7&r=0&o=7&dpr=1.3&pid=1.7&rm=3",
         "reviews": 423,
         "badge": ""
@@ -856,7 +856,7 @@ products = [
   "rating": 4.3,
   "reviews": 12000,
   "badge": "Sale",
-  "image": "https://th.bing.com/th/id/OIP.44ciNE8XxJXm84XpFy4NggHaLd?w=129&h=200&c=7&r=0&o=7&dpr=1.3&pid=1.7&rm=3"
+  "image": "https://rukminim2.flixcart.com/image/312/312/xif0q/headphone/n/s/g/-original-imaghx8hggzhmhch.jpeg?q=70"
   },
   {
   "id": 203,
@@ -889,7 +889,7 @@ products = [
   "rating": 4.0,
   "reviews": 98000,
   "badge": "Hot",
-  "image": "https://th.bing.com/th/id/OIP.uMky5HH9Dq6smht3ZlL3qgHaHS?w=199&h=195&c=7&r=0&o=7&dpr=1.3&pid=1.7&rm=3"
+  "image": "https://rukminim2.flixcart.com/image/312/312/xif0q/headphone/e/o/q/-original-imagh4zhhzhzhzhz.jpeg?q=70"
   },
   {
   "id": 206,
@@ -902,7 +902,7 @@ products = [
   "badge": "Sale",
   "image": "https://th.bing.com/th/id/OIP.T3j9bagPmorFAF84-LykzgHaEK?w=331&h=186&c=7&r=0&o=7&dpr=1.3&pid=1.7&rm=3"
   },
-    {
+  {
     "name": "Apple iPhone 17 Pro Max (Silver, 256 GB)",
     "price": 149900,
     "rating": 4.8641,
@@ -1166,6 +1166,7 @@ products = [
     "badge": "",
     "id": 124
   }
+
 ]
 
 
