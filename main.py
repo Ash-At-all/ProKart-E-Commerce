@@ -1,14 +1,12 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
-from typing import Dict
-import json
-import os
 
 from database import products
+from mongo import cart_collection
 
-app = FastAPI(title="ProKart API", version="2.0.0")
+app = FastAPI(title="ProKart API", version="3.0.0")
 
 # ✅ CORS
 app.add_middleware(
@@ -18,9 +16,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-# ✅ USER-BASED CART (IMPORTANT)
-cart_data: Dict[int, dict] = {}
 
 # ---------------- HOME ----------------
 @app.get("/", response_class=HTMLResponse)
@@ -40,80 +35,80 @@ async def get_products(category: str = "all"):
     filtered = [p for p in products if p["category"] == category]
     return {"products": filtered}
 
-# ---------------- CATEGORIES ----------------
-@app.get("/api/categories")
-async def get_categories():
-    categories = list(set(p["category"] for p in products))
-    return {"categories": categories}
-
-# ---------------- STATS ----------------
-@app.get("/api/stats")
-async def get_stats():
-    return {
-        "products": len(products),
-        "customers": 50000,
-        "orders": 25000,
-        "reviews": 12000
-    }
-
 # ---------------- ADD TO CART ----------------
 @app.post("/api/cart/add")
 async def add_to_cart(user_id: int, product_id: int):
-    global cart_data
 
-    # 🔍 Find product
     product = next((p for p in products if p["id"] == product_id), None)
 
     if not product:
         return {"error": "Product not found"}
 
-    # 👤 Create cart for user if not exists
-    if user_id not in cart_data:
-        cart_data[user_id] = {"items": [], "total": 0}
+    cart = cart_collection.find_one({"user_id": user_id})
 
-    # ➕ Add product
-    cart_data[user_id]["items"].append(product)
+    if not cart:
+        cart_collection.insert_one({
+            "user_id": user_id,
+            "items": [product],
+            "total": product["price"]
+        })
+    else:
+        cart_collection.update_one(
+            {"user_id": user_id},
+            {
+                "$push": {"items": product},
+                "$inc": {"total": product["price"]}
+            }
+        )
 
-    price = product.get("price", 0)
-    cart_data[user_id]["total"] += price
-
-    return {"status": "added ✅", "cart": cart_data[user_id]}
+    return {"status": "added ✅"}
 
 # ---------------- GET CART ----------------
 @app.get("/api/cart/{user_id}")
 async def get_cart(user_id: int):
-    return cart_data.get(user_id, {"items": [], "total": 0})
+    cart = cart_collection.find_one({"user_id": user_id}, {"_id": 0})
+    return cart if cart else {"items": [], "total": 0}
 
 # ---------------- REMOVE FROM CART ----------------
 @app.delete("/api/cart/remove")
 async def remove_from_cart(user_id: int, product_id: int):
-    if user_id not in cart_data:
+
+    cart = cart_collection.find_one({"user_id": user_id})
+
+    if not cart:
         return {"error": "Cart not found"}
 
-    cart = cart_data[user_id]
+    items = cart.get("items", [])
     new_items = []
     removed = False
+    total = cart.get("total", 0)
 
-    for item in cart["items"]:
+    for item in items:
         if item["id"] == product_id and not removed:
-            cart["total"] -= item.get("price", 0)
+            total -= item.get("price", 0)
             removed = True
             continue
         new_items.append(item)
 
-    cart["items"] = new_items
+    cart_collection.update_one(
+        {"user_id": user_id},
+        {
+            "$set": {
+                "items": new_items,
+                "total": total
+            }
+        }
+    )
 
-    return {"status": "removed ✅", "cart": cart}
+    return {"status": "removed ✅"}
 
 # ---------------- CHECKOUT ----------------
 @app.post("/api/checkout")
 async def checkout(user_id: int):
-    global cart_data
 
-    if user_id in cart_data:
-        cart_data[user_id] = {"items": [], "total": 0}
+    cart_collection.delete_one({"user_id": user_id})
 
-    return {"status": "success ✅", "message": "Order placed successfully!"}
+    return {"status": "success ✅", "message": "Order placed!"}
 
 # ---------------- HEALTH ----------------
 @app.get("/api/health")
