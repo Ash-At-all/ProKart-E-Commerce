@@ -6,7 +6,7 @@ products = [
         "category": "phones",
         "price": 129999,
         "original": 144900,
-        "rating": 4.8,
+        "rating": 5,
         "image": "https://th.bing.com/th/id/OIP.QQ_AhWpil9Da-IVorp_uegHaJM?w=142&h=180&c=7&r=0&o=7&dpr=1.3&pid=1.7&rm=3",
         "reviews": 247,
         "badge": "New"
@@ -72,7 +72,7 @@ products = [
         "category": "audio",
         "price": 9999,
         "original": 11999,
-        "rating": 4.3,
+        "rating": 3,
         "image": "https://th.bing.com/th/id/OIP.zJAAicMrDze_TmT9ysefxgHaHa?w=172&h=180&c=7&r=0&o=7&dpr=1.3&pid=1.7&rm=3",
         "reviews": 423,
         "badge": ""
