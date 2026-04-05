@@ -1,14 +1,24 @@
-from fastapi import FastAPI
-from fastapi.responses import HTMLResponse
+from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import HTMLResponse
 import uvicorn
 
+from jose import jwt, JWTError
+from passlib.context import CryptContext
+from datetime import datetime, timedelta
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+
 from database import products
-from mongo import cart_collection
+from mongo import cart_collection, user_collection
+import os
+from dotenv import load_dotenv
+import os
 
-app = FastAPI(title="ProKart API", version="3.0.0")
+load_dotenv()
 
-# ✅ CORS
+app = FastAPI(title="ProKart API", version="4.0.0")
+
+# CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -17,44 +27,86 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ---------------- HOME ----------------
-@app.get("/", response_class=HTMLResponse)
-async def read_root():
+# ================= AUTH SETUP =================
+SECRET_KEY = os.getenv("SECRET_KEY") or "fallback_secret_key"
+ALGORITHM = "HS256"
+
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+security = HTTPBearer()
+
+def hash_password(password: str):
+    return pwd_context.hash(password)
+
+def verify_password(plain, hashed):
+    return pwd_context.verify(plain, hashed)
+
+def create_token(data: dict):
+    data_copy = data.copy()
+    data_copy.update({"exp": datetime.utcnow() + timedelta(hours=2)})
+    return jwt.encode(data_copy, SECRET_KEY, algorithm=ALGORITHM)
+
+def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)):
     try:
-        with open("index.html", "r", encoding="utf-8") as f:
-            return HTMLResponse(content=f.read())
-    except:
-        return HTMLResponse(content="index.html not found")
+        token = credentials.credentials
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        return payload["username"]
+    except JWTError:
+        raise HTTPException(status_code=401, detail="Invalid token")
 
-# ---------------- PRODUCTS ----------------
+# ================= HOME =================
+@app.get("/", response_class=HTMLResponse)
+async def home():
+    return "<h1>ProKart API Running 🚀</h1>"
+
+# ================= PRODUCTS =================
 @app.get("/api/products")
-async def get_products(category: str = "all"):
-    if category == "all":
-        return {"products": products}
-    
-    filtered = [p for p in products if p["category"] == category]
-    return {"products": filtered}
+async def get_products():
+    return {"products": products}
 
-# ---------------- ADD TO CART ----------------
+# ================= AUTH =================
+@app.post("/api/signup")
+async def signup(username: str, password: str):
+    if user_collection.find_one({"username": username}):
+        return {"error": "User already exists"}
+
+    user_collection.insert_one({
+        "username": username,
+        "password": hash_password(password)
+    })
+
+    return {"status": "User created ✅"}
+
+@app.post("/api/login")
+async def login(username: str, password: str):
+    user = user_collection.find_one({"username": username})
+
+    if not user or not verify_password(password, user["password"]):
+        return {"error": "Invalid credentials"}
+
+    token = create_token({"username": username})
+
+    return {"access_token": token}
+
+# ================= CART =================
 @app.post("/api/cart/add")
-async def add_to_cart(user_id: int, product_id: int):
+async def add_to_cart(product_id: int, username: str = Depends(get_current_user)):
 
     product = next((p for p in products if p["id"] == product_id), None)
 
     if not product:
-        return {"error": "Product not found"}
+        raise HTTPException(status_code=404, detail="Product not found")
 
-    cart = cart_collection.find_one({"user_id": user_id})
+    cart = cart_collection.find_one({"username": username})
 
     if not cart:
         cart_collection.insert_one({
-            "user_id": user_id,
+            "username": username,
             "items": [product],
             "total": product["price"]
         })
     else:
         cart_collection.update_one(
-            {"user_id": user_id},
+            {"username": username},
             {
                 "$push": {"items": product},
                 "$inc": {"total": product["price"]}
@@ -63,17 +115,15 @@ async def add_to_cart(user_id: int, product_id: int):
 
     return {"status": "added ✅"}
 
-# ---------------- GET CART ----------------
-@app.get("/api/cart/{user_id}")
-async def get_cart(user_id: int):
-    cart = cart_collection.find_one({"user_id": user_id}, {"_id": 0})
+@app.get("/api/cart")
+async def get_cart(username: str = Depends(get_current_user)):
+    cart = cart_collection.find_one({"username": username}, {"_id": 0})
     return cart if cart else {"items": [], "total": 0}
 
-# ---------------- REMOVE FROM CART ----------------
 @app.delete("/api/cart/remove")
-async def remove_from_cart(user_id: int, product_id: int):
+async def remove_from_cart(product_id: int, username: str = Depends(get_current_user)):
 
-    cart = cart_collection.find_one({"user_id": user_id})
+    cart = cart_collection.find_one({"username": username})
 
     if not cart:
         return {"error": "Cart not found"}
@@ -91,31 +141,25 @@ async def remove_from_cart(user_id: int, product_id: int):
         new_items.append(item)
 
     cart_collection.update_one(
-        {"user_id": user_id},
-        {
-            "$set": {
-                "items": new_items,
-                "total": total
-            }
-        }
+        {"username": username},
+        {"$set": {"items": new_items, "total": total}}
     )
 
     return {"status": "removed ✅"}
 
-# ---------------- CHECKOUT ----------------
+# ================= CHECKOUT =================
 @app.post("/api/checkout")
-async def checkout(user_id: int):
+async def checkout(username: str = Depends(get_current_user)):
+    cart_collection.delete_one({"username": username})
+    return {"status": "Order placed ✅"}
 
-    cart_collection.delete_one({"user_id": user_id})
-
-    return {"status": "success ✅", "message": "Order placed!"}
-
-# ---------------- HEALTH ----------------
+# ================= HEALTH =================
 @app.get("/api/health")
-async def health_check():
-    return {"status": "ProKart API running 🚀"}
+async def health():
+    return {"status": "API running 🚀"}
 
-# ---------------- RUN ----------------
+# ================= RUN =================
 if __name__ == "__main__":
-    print("🚀 ProKart Backend Starting...")
     uvicorn.run(app, host="0.0.0.0", port=8000, reload=True)
+
+print("SECRET:", SECRET_KEY)
