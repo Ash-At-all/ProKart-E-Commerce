@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, FileResponse
+from fastapi.staticfiles import StaticFiles
 import uvicorn
 
 from jose import jwt, JWTError
@@ -12,13 +13,15 @@ from database import products
 from mongo import cart_collection, user_collection
 import os
 from dotenv import load_dotenv
-import os
 
 load_dotenv()
 
 app = FastAPI(title="ProKart API", version="4.0.0")
 
-# CORS
+# ================= STATIC FILES =================
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
+# ================= CORS =================
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -56,7 +59,7 @@ def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(securit
 # ================= HOME =================
 @app.get("/", response_class=HTMLResponse)
 async def home():
-    return "<h1>ProKart API Running 🚀</h1>"
+    return FileResponse("index.html")
 
 # ================= PRODUCTS =================
 @app.get("/api/products")
@@ -67,7 +70,7 @@ async def get_products():
 @app.post("/api/signup")
 async def signup(username: str, password: str):
     if user_collection.find_one({"username": username}):
-        return {"error": "User already exists"}
+        raise HTTPException(status_code=400, detail="User already exists")
 
     user_collection.insert_one({
         "username": username,
@@ -81,7 +84,7 @@ async def login(username: str, password: str):
     user = user_collection.find_one({"username": username})
 
     if not user or not verify_password(password, user["password"]):
-        return {"error": "Invalid credentials"}
+        raise HTTPException(status_code=401, detail="Invalid credentials")
 
     token = create_token({"username": username})
 
@@ -126,7 +129,7 @@ async def remove_from_cart(product_id: int, username: str = Depends(get_current_
     cart = cart_collection.find_one({"username": username})
 
     if not cart:
-        return {"error": "Cart not found"}
+        raise HTTPException(status_code=404, detail="Cart not found")
 
     items = cart.get("items", [])
     new_items = []
@@ -160,6 +163,5 @@ async def health():
 
 # ================= RUN =================
 if __name__ == "__main__":
+    print("SECRET:", SECRET_KEY)
     uvicorn.run(app, host="0.0.0.0", port=8000, reload=True)
-
-print("SECRET:", SECRET_KEY)
