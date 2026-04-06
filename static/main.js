@@ -199,3 +199,51 @@ window.addEventListener('load', async () => {
     document.getElementById('count4').textContent = '12,000';
   }
 });
+function searchProducts() {
+  const query = document.getElementById('searchInput').value.toLowerCase();
+  const minPrice = parseInt(document.getElementById('minPrice').value);
+  const maxPrice = parseInt(document.getElementById('maxPrice').value);
+
+  const filtered = allProducts.filter(p => {
+    const nameMatch = p.name.toLowerCase().includes(query);
+    const priceMatch = p.price >= minPrice && p.price <= maxPrice;
+    return nameMatch && priceMatch;
+  });
+
+  const grid = document.getElementById('productGrid');
+  
+  if (filtered.length === 0) {
+    grid.innerHTML = '<div class="col-12 text-center" style="padding:60px;color:var(--text-muted)"><i class="fas fa-search" style="font-size:3rem;display:block;margin-bottom:16px;"></i>No products found!</div>';
+    document.getElementById('viewMoreBtn').style.display = 'none';
+    return;
+  }
+
+  grid.innerHTML = filtered.slice(0, visibleCount).map(p => `
+    <div class="col-lg-3 col-md-4 col-sm-6">
+      <div class="product-card">
+        ${p.badge ? `<div class="product-badge ${p.badge==='Sale'?'sale':''}">${p.badge}</div>` : ''}
+        <div class="product-img-wrap">
+          <img src="${p.image}" alt="${p.name}" class="product-image" loading="lazy">
+        </div>
+        <div class="product-info">
+          <div class="product-category">${p.category.toUpperCase()}</div>
+          <div class="product-name">${p.name}</div>
+          <div class="product-rating">
+            ${'★'.repeat(Math.floor(p.rating || 0))}${'☆'.repeat(5-Math.floor(p.rating || 0))}
+            <span>(${(p.reviews || 0).toLocaleString()})</span>
+          </div>
+          <div class="product-price">
+            <span class="price-new">₹${(p.price || 0).toLocaleString('en-IN')}</span>
+            <span class="price-old">₹${(p.original || 0).toLocaleString('en-IN')}</span>
+          </div>
+          <button class="btn-cart" id="btn-${p.id}" onclick="addToCart(${p.id})">
+            <i class="fas fa-shopping-cart me-2"></i>Add to Cart
+          </button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+
+  document.getElementById('viewMoreBtn').style.display = 
+    filtered.length > visibleCount ? 'block' : 'none';
+}
