@@ -161,6 +161,15 @@ async def checkout(username: str = Depends(get_current_user)):
 async def health():
     return {"status": "API running 🚀"}
 
+@app.get("/api/stats")
+async def get_stats():
+    return {
+        "products": len(products),
+        "customers": 50000,
+        "orders": 25000,
+        "reviews": 12000
+    }
+
 # ================= RUN =================
 if __name__ == "__main__":
     print("SECRET:", SECRET_KEY)
