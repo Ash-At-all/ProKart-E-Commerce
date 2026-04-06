@@ -48,7 +48,7 @@ products = [
     {
         "id": 5,
         "name": "iPad Air M2 11\"",
-        "category": "accessories",
+        "category": "phones",
         "price": 69999,
         "original": 74900,
         "rating": 4.6,
