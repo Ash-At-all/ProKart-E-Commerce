@@ -607,6 +607,17 @@ products = [
         "badge": ""
     },
     {
+        "id": 207,
+        "name": "EVOFOX One S Universal 3-Mode Wireless & Wired  Gamepad (Red, For PC, iOS, Android)",
+        "category": "accessories",
+        "price": 1649,
+        "original": 2299,
+        "rating": 5.0,
+        "image": "https://rukminim1.flixcart.com/image/1536/1536/xif0q/gamepad/wireless-wired-bluetooth/a/b/e/one-s-universal-3-mode-wireless-wired-evofox-original-imahm569kkspwxhq.jpeg?q=90",
+        "reviews": 200,
+        "badge": "Hot"
+    },
+    {
         "id": 206,
         "name": "Samsung Galaxy Watch 6",
         "category": "accessories",
