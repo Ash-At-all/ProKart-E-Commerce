@@ -756,6 +756,33 @@
 </section>
 
 <!-- ─── PRODUCTS ─── -->
+<!-- Search Bar -->
+<div class="search-wrap" style="max-width:600px;margin:0 auto 32px;">
+  <div style="display:flex;gap:12px;align-items:center;">
+    <div style="position:relative;flex:1;">
+      <i class="fas fa-search" style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--text-muted);"></i>
+      <input type="text" id="searchInput" placeholder="Search products..." 
+        style="width:100%;background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:11px 14px 11px 40px;color:var(--text);font-family:'Syne',sans-serif;font-size:0.9rem;outline:none;"
+        oninput="searchProducts()">
+    </div>
+    <select id="minPrice" onchange="searchProducts()" style="background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:11px 14px;color:var(--text);font-family:'Syne',sans-serif;font-size:0.85rem;outline:none;">
+      <option value="0">Min ₹0</option>
+      <option value="1000">₹1,000</option>
+      <option value="5000">₹5,000</option>
+      <option value="10000">₹10,000</option>
+      <option value="25000">₹25,000</option>
+      <option value="50000">₹50,000</option>
+    </select>
+    <select id="maxPrice" onchange="searchProducts()" style="background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:11px 14px;color:var(--text);font-family:'Syne',sans-serif;font-size:0.85rem;outline:none;">
+      <option value="999999">Max Any</option>
+      <option value="5000">₹5,000</option>
+      <option value="10000">₹10,000</option>
+      <option value="25000">₹25,000</option>
+      <option value="50000">₹50,000</option>
+      <option value="100000">₹1,00,000</option>
+    </select>
+  </div>
+</div>
 <section id="products" class="wrapper">
   <div class="container">
     <div class="section-header">
