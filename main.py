@@ -166,8 +166,8 @@ async def get_stats():
     return {
         "products": len(products),
         "customers": 50000,
-        "orders": 25000,
-        "reviews": 12000
+        "orders": 21288,
+        "reviews": 18392
     }
 
 # ================= RUN =================
