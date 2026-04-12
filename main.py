@@ -9,14 +9,13 @@ from passlib.context import CryptContext
 from datetime import datetime, timedelta
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
-from database import products
-from mongo import cart_collection, user_collection
+from mongo import cart_collection, user_collection, products_collection
 import os
 from dotenv import load_dotenv
 
 load_dotenv()
 
-app = FastAPI(title="ProKart API", version="4.0.0")
+app = FastAPI(title="ProKart API", version="5.0.0")
 
 # ================= STATIC FILES =================
 app.mount("/static", StaticFiles(directory="static"), name="static")
@@ -63,8 +62,12 @@ async def home():
 
 # ================= PRODUCTS =================
 @app.get("/api/products")
-async def get_products():
-    return {"products": products}
+async def get_products(category: str = "all"):
+    if category == "all":
+        prods = list(products_collection.find({}, {"_id": 0}))
+    else:
+        prods = list(products_collection.find({"category": category}, {"_id": 0}))
+    return {"products": prods}
 
 # ================= AUTH =================
 @app.post("/api/signup")
@@ -94,7 +97,7 @@ async def login(username: str, password: str):
 @app.post("/api/cart/add")
 async def add_to_cart(product_id: int, username: str = Depends(get_current_user)):
 
-    product = next((p for p in products if p["id"] == product_id), None)
+    product = products_collection.find_one({"id": product_id}, {"_id": 0})
 
     if not product:
         raise HTTPException(status_code=404, detail="Product not found")
@@ -163,8 +166,9 @@ async def health():
 
 @app.get("/api/stats")
 async def get_stats():
+    total_products = products_collection.count_documents({})
     return {
-        "products": len(products),
+        "products": total_products,
         "customers": 50000,
         "orders": 21288,
         "reviews": 18392
