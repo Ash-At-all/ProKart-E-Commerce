@@ -12,4 +12,5 @@ db = client["prokart"]
 
 cart_collection = db["cart"]
 user_collection = db["users"]
+products_collection = db["products"]
 
