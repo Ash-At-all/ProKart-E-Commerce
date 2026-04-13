@@ -1,6 +1,8 @@
 const API_BASE = 'https://prokart-e-commerce.onrender.com';
 let cart = [];
 let currentFilter = 'all';
+let allProducts = [];
+let visibleCount = 24;
 
 async function fetchProducts(category = 'all') {
   try {
@@ -19,20 +21,21 @@ function shuffleArray(arr) {
 
 async function renderProducts(filter = 'all') {
   allProducts = await fetchProducts(filter);
-  allProducts = shuffleArray(allProducts); // ADD
+  allProducts = shuffleArray(allProducts);
   visibleCount = 24;
   displayProducts();
 }
+
 function displayProducts() {
   const grid = document.getElementById('productGrid');
   const visible = allProducts.slice(0, visibleCount);
-  
+
   grid.innerHTML = visible.map(p => `
     <div class="col-lg-3 col-md-4 col-sm-6" data-category="${p.category}">
       <div class="product-card">
         ${p.badge ? `<div class="product-badge ${p.badge==='Sale'?'sale':''}">${p.badge}</div>` : ''}
         <div class="product-img-wrap">
-          <img src="${p.image}" alt="${p.name}" class="product-image" loading="lazy">
+          <img src="${p.image || 'https://via.placeholder.com/200x200?text=ProKart'}" alt="${p.name}" class="product-image" loading="lazy">
         </div>
         <div class="product-info">
           <div class="product-category">${p.category.toUpperCase()}</div>
@@ -53,7 +56,6 @@ function displayProducts() {
     </div>
   `).join('');
 
-  // View More button
   const btn = document.getElementById('viewMoreBtn');
   if (btn) {
     btn.style.display = visibleCount >= allProducts.length ? 'none' : 'block';
@@ -66,9 +68,9 @@ function loadMore() {
 }
 
 async function addToCart(id) {
-  const allProducts = await fetchProducts('all');
-  const product = allProducts.find(p => p.id === id);
-  
+  const products = await fetchProducts('all');
+  const product = products.find(p => p.id === id);
+
   if (product) {
     const existing = cart.find(c => c.id === id);
     if (existing) {
@@ -100,13 +102,13 @@ async function filterProducts(cat, btn) {
 
 async function checkout() {
   try {
-    const response = await fetch(`${API_BASE}/api/orders`, {
+    const response = await fetch(`${API_BASE}/api/checkout`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ cart: cart })
     });
     const data = await response.json();
-    showToast(`🎉 Order #${data.order_id} placed!`);
+    showToast('🎉 Order placed!');
   } catch (error) {
     showToast('🎉 Order placed! (demo mode)');
   }
@@ -136,7 +138,7 @@ function updateCartUI() {
 
   cartItems.innerHTML = cart.map(item => `
     <div class="cart-item">
-      <img src="${item.image}" style="width:50px;height:50px;object-fit:contain;border-radius:8px;">
+      <img src="${item.image || 'https://via.placeholder.com/50'}" style="width:50px;height:50px;object-fit:contain;border-radius:8px;">
       <div class="cart-item-info">
         <div class="cart-item-name">${item.name}</div>
         <div class="cart-item-price">₹${item.price.toLocaleString()} x ${item.qty}</div>
@@ -164,23 +166,23 @@ function showToast(msg) {
   setTimeout(() => toast.classList.remove('show'), 2500);
 }
 
-window.addEventListener('load', async () => {
-  await renderProducts();
-  
+// Stats with retry logic
+async function loadStats() {
   try {
     const stats = await fetch(`${API_BASE}/api/stats`).then(r => r.json());
-    
+
     const counters = [
       { id: 'count1', target: stats.products || 0 },
       { id: 'count2', target: stats.customers || 0 },
       { id: 'count3', target: stats.orders || 0 },
       { id: 'count4', target: stats.reviews || 0 }
     ];
-    
+
     counters.forEach(({ id, target }) => {
       let current = 0;
       const step = Math.ceil(target / 100);
       const el = document.getElementById(id);
+      if (!el) return;
       const interval = setInterval(() => {
         current += step;
         if (current >= target) {
@@ -193,12 +195,12 @@ window.addEventListener('load', async () => {
     });
 
   } catch(e) {
-    document.getElementById('count1').textContent = '82';
-    document.getElementById('count2').textContent = '50,000';
-    document.getElementById('count3').textContent = '25,000';
-    document.getElementById('count4').textContent = '12,000';
+    // 5 seconds baad retry karo
+    console.log('Stats retry kar raha hai...');
+    setTimeout(loadStats, 5000);
   }
-});
+}
+
 function searchProducts() {
   const query = document.getElementById('searchInput').value.toLowerCase();
   const minPrice = parseInt(document.getElementById('minPrice').value);
@@ -211,7 +213,7 @@ function searchProducts() {
   });
 
   const grid = document.getElementById('productGrid');
-  
+
   if (filtered.length === 0) {
     grid.innerHTML = '<div class="col-12 text-center" style="padding:60px;color:var(--text-muted)"><i class="fas fa-search" style="font-size:3rem;display:block;margin-bottom:16px;"></i>No products found!</div>';
     document.getElementById('viewMoreBtn').style.display = 'none';
@@ -223,7 +225,7 @@ function searchProducts() {
       <div class="product-card">
         ${p.badge ? `<div class="product-badge ${p.badge==='Sale'?'sale':''}">${p.badge}</div>` : ''}
         <div class="product-img-wrap">
-          <img src="${p.image}" alt="${p.name}" class="product-image" loading="lazy">
+          <img src="${p.image || 'https://via.placeholder.com/200x200?text=ProKart'}" alt="${p.name}" class="product-image" loading="lazy">
         </div>
         <div class="product-info">
           <div class="product-category">${p.category.toUpperCase()}</div>
@@ -244,6 +246,11 @@ function searchProducts() {
     </div>
   `).join('');
 
-  document.getElementById('viewMoreBtn').style.display = 
+  document.getElementById('viewMoreBtn').style.display =
     filtered.length > visibleCount ? 'block' : 'none';
 }
+
+window.addEventListener('load', async () => {
+  await renderProducts();
+  loadStats();
+});
