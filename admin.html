@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white font-sans">
+
+<div class="flex min-h-screen">
+
+  <!-- Sidebar -->
+  <aside class="w-64 bg-gray-800 p-5">
+    <h1 class="text-2xl font-bold text-green-400 mb-8">ProKart Admin</h1>
+    <ul class="space-y-4">
+      <li class="hover:text-green-400 cursor-pointer">Dashboard</li>
+      <li class="hover:text-green-400 cursor-pointer">Products</li>
+      <li class="hover:text-green-400 cursor-pointer">Orders</li>
+      <li class="hover:text-green-400 cursor-pointer">Users</li>
+    </ul>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="flex-1 p-6">
+
+    <!-- Top Bar -->
+    <div class="flex justify-between items-center mb-6">
+      <h2 class="text-2xl font-bold">Dashboard</h2>
+      <div class="bg-gray-800 px-4 py-2 rounded-lg">Welcome, Admin</div>
+    </div>
+
+    <!-- Stats -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+      <div class="bg-gray-800 p-5 rounded-xl shadow">
+        <h3 class="text-gray-400">Products</h3>
+        <p class="text-2xl font-bold">120</p>
+      </div>
+      <div class="bg-gray-800 p-5 rounded-xl shadow">
+        <h3 class="text-gray-400">Orders</h3>
+        <p class="text-2xl font-bold">75</p>
+      </div>
+      <div class="bg-gray-800 p-5 rounded-xl shadow">
+        <h3 class="text-gray-400">Users</h3>
+        <p class="text-2xl font-bold">50</p>
+      </div>
+    </div>
+
+    <!-- Add Product -->
+    <div class="bg-gray-800 p-6 rounded-xl mb-6">
+      <h3 class="text-xl mb-4">Add Product</h3>
+      <div class="grid grid-cols-2 gap-4">
+        <input id="name" placeholder="Name" class="p-2 rounded bg-gray-700">
+        <input id="price" placeholder="Price" class="p-2 rounded bg-gray-700">
+        <input id="category" placeholder="Category" class="p-2 rounded bg-gray-700">
+        <input id="image" placeholder="Image URL" class="p-2 rounded bg-gray-700">
+      </div>
+      <button onclick="addProduct()" class="mt-4 bg-green-500 px-4 py-2 rounded hover:bg-green-600">Add Product</button>
+    </div>
+
+    <!-- Product List -->
+    <div class="bg-gray-800 p-6 rounded-xl">
+      <h3 class="text-xl mb-4">All Products</h3>
+      <div id="productList" class="space-y-3"></div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+const API_BASE = "https://prokart-e-commerce.onrender.com";
+
+function getToken() {
+  return localStorage.getItem("token");
+}
+
+async function addProduct() {
+  const product = {
+    id: Date.now(),
+    name: document.getElementById("name").value,
+    price: Number(document.getElementById("price").value),
+    category: document.getElementById("category").value,
+    image: document.getElementById("image").value
+  };
+
+  await fetch(`${API_BASE}/api/admin/add-product`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${getToken()}`
+    },
+    body: JSON.stringify(product)
+  });
+
+  loadProducts();
+}
+
+async function loadProducts() {
+  const res = await fetch(`${API_BASE}/api/products`);
+  const data = await res.json();
+
+  const container = document.getElementById("productList");
+
+  container.innerHTML = data.products.map(p => `
+    <div class="flex justify-between bg-gray-700 p-3 rounded">
+      <div>${p.name} - ₹${p.price}</div>
+      <button onclick="deleteProduct(${p.id})" class="bg-red-500 px-3 py-1 rounded">Delete</button>
+    </div>
+  `).join('');
+}
+
+async function deleteProduct(id) {
+  await fetch(`${API_BASE}/api/admin/delete-product/${id}`, {
+    method: "DELETE",
+    headers: {
+      "Authorization": `Bearer ${getToken()}`
+    }
+  });
+
+  loadProducts();
+}
+
+window.onload = loadProducts;
+</script>
+
+</body>
+</html>
