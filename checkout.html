@@ -1029,7 +1029,8 @@ document.querySelectorAll('.form-input').forEach(el => {
 });
 
 // ── PLACE ORDER ───────────────────────────────────────────
-function placeOrder() {
+// ── PLACE ORDER ───────────────────────────────────────────
+async function placeOrder() {
   if (!cart || cart.length === 0) {
     showToast('⚠️ Your cart is empty!'); return;
   }
@@ -1037,37 +1038,68 @@ function placeOrder() {
     showToast('⚠️ Please fill all required fields!'); return;
   }
 
+  const token = localStorage.getItem('prokart_token');
+  if (!token) {
+    showToast('⚠️ Please login to place an order!');
+    setTimeout(() => window.location.href = 'login.html', 1500);
+    return;
+  }
+
   const btn = document.getElementById('placeOrderBtn');
   const btnText = document.getElementById('orderBtnText');
   btn.classList.add('loading');
+  btn.disabled = true;
   btnText.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Processing...';
 
-  setTimeout(() => {
-    // Generate order ID
-    // Generate order ID
-const orderId = 'PKT-' + Math.random().toString(36).substring(2,8).toUpperCase();
-const email = document.getElementById('email').value;
+  try {
+    const params = new URLSearchParams({
+      fullName: document.getElementById('fullName').value,
+      email: document.getElementById('email').value,
+      phone: document.getElementById('phone').value,
+      address: document.getElementById('address').value,
+      city: document.getElementById('city').value,
+      state: document.getElementById('state').value,
+      pincode: document.getElementById('pincode').value,
+      payment: selectedPayment.toUpperCase()
+    });
 
-const orderData = {
-  id: orderId,
-  date: new Date().toLocaleDateString('en-IN'),
-  items: [...cart],
-  total: document.getElementById('totalVal').textContent,
-  status: 'Confirmed',
-  address: document.getElementById('address').value + ', ' + 
-           document.getElementById('city').value + ', ' +
-           document.getElementById('state').value + ' - ' +
-           document.getElementById('pincode').value,
-  payment: selectedPayment.toUpperCase(),
-  name: document.getElementById('fullName').value,
-  email: document.getElementById('email').value
-};
-const existingOrders = JSON.parse(localStorage.getItem('prokart_orders') || '[]');
-existingOrders.unshift(orderData);
-localStorage.setItem('prokart_orders', JSON.stringify(existingOrders));
+    // Use current origin for API calls if testing locally, else use the production URL
+    const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+                     ? '' : 'https://prokart-e-commerce.onrender.com';
 
-// Clear cart
-['prokart_cart', 'cart', 'cartItems', 'proKartCart'].forEach(k => localStorage.removeItem(k));
+    const res = await fetch(`${API_BASE}/api/checkout?${params}`, {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + token }
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.detail || 'Failed to place order');
+    }
+
+    const orderId = data.order_id;
+    const email = document.getElementById('email').value;
+
+    // Save locally too for "My Orders" page
+    const orderData = {
+      id: orderId,
+      date: new Date().toLocaleDateString('en-IN'),
+      items: [...cart],
+      total: document.getElementById('totalVal').textContent,
+      status: 'Confirmed',
+      address: params.get('address') + ', ' + params.get('city') + ', ' + params.get('state') + ' - ' + params.get('pincode'),
+      payment: selectedPayment.toUpperCase(),
+      name: params.get('fullName'),
+      email: email
+    };
+    const existingOrders = JSON.parse(localStorage.getItem('prokart_orders') || '[]');
+    existingOrders.unshift(orderData);
+    localStorage.setItem('prokart_orders', JSON.stringify(existingOrders));
+
+    // Clear cart
+    ['prokart_cart', 'cart', 'cartItems', 'proKartCart'].forEach(k => localStorage.removeItem(k));
+    
     // Update step UI
     document.getElementById('step2').className = 'step done';
     document.getElementById('step2').querySelector('.step-circle').innerHTML = '<i class="fas fa-check" style="font-size:0.8rem"></i>';
@@ -1078,7 +1110,14 @@ localStorage.setItem('prokart_orders', JSON.stringify(existingOrders));
     document.getElementById('orderIdDisplay').textContent = 'ORDER #' + orderId;
     document.getElementById('confirmEmail').textContent = email;
     document.getElementById('successOverlay').classList.add('show');
-  }, 1800);
+
+  } catch (err) {
+    console.error(err);
+    showToast('❌ Error: ' + err.message);
+    btn.classList.remove('loading');
+    btn.disabled = false;
+    btnText.innerHTML = '<i class="fas fa-lock me-2"></i> Place Order';
+  }
 }
 
 // ── TOAST ─────────────────────────────────────────────────
