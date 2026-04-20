@@ -625,6 +625,58 @@
   }
   .toast-msg.show { transform: translateX(-50%) translateY(0); }
 
+  /* ── USER AUTH PILL ── */
+  .user-pill {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(0,229,255,0.08);
+    border: 1.5px solid rgba(0,229,255,0.25);
+    border-radius: 8px;
+    padding: 7px 14px;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.2s;
+    font-family: 'Syne', sans-serif;
+  }
+  .user-pill:hover { background: rgba(0,229,255,0.15); border-color: var(--accent); }
+  .user-avatar-mini {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 0.78rem; color: var(--bg-dark);
+    flex-shrink: 0;
+  }
+  .user-name-label {
+    font-size: 0.85rem; font-weight: 700; color: var(--accent);
+    max-width: 100px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .user-dropdown {
+    position: absolute; top: calc(100% + 10px); right: 0;
+    background: var(--bg-card2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    min-width: 160px;
+    padding: 8px;
+    display: none;
+    z-index: 9999;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    backdrop-filter: blur(10px);
+  }
+  .user-pill.open .user-dropdown { display: block; }
+  .dropdown-item-custom {
+    display: flex; align-items: center; gap: 8px;
+    padding: 9px 12px; border-radius: 7px;
+    color: var(--text-muted); font-size: 0.83rem; font-weight: 600;
+    cursor: pointer; transition: all 0.2s;
+    border: none; background: none; width: 100%; text-align: left;
+    font-family: 'Syne', sans-serif;
+  }
+  .dropdown-item-custom:hover { background: rgba(0,229,255,0.08); color: var(--accent); }
+  .dropdown-item-custom.logout-btn { color: #ef5350; }
+  .dropdown-item-custom.logout-btn:hover { background: rgba(229,57,53,0.08); color: #ef5350; }
+
   /* Responsive */
   @media (max-width: 768px) {
     .cart-sidebar { width: 100%; right: -100%; }
@@ -658,15 +710,10 @@
 </div>
 
 <!-- ─── HEADER / NAVBAR ─── -->
-  <li class="nav-item ms-lg-3">
-  <a href="login.html" class="cart-btn">
-    <i class="fas fa-user"></i> Login
-  </a>
-</li>
 <header>
   <nav class="navbar navbar-expand-lg">
     <div class="container">
-      <a class="navbar-brand" href="#">PRO<span>KART</span></a>
+      <a class="navbar-brand" href="#">KART<span>PRO</span></a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
         <i class="fas fa-bars" style="color:var(--accent)"></i>
       </button>
@@ -681,6 +728,9 @@
               <i class="fas fa-shopping-cart"></i>
               Cart <span class="cart-count" id="cartCount">0</span>
             </button>
+          </li>
+          <li class="nav-item ms-lg-2" id="authNavItem">
+            <span id="authNav"></span>
           </li>
         </ul>
       </div>
@@ -810,8 +860,47 @@
   </button>
 </div>
 </section>
+<!-- ABOUT -->
+<section id="about">
+  <div class="container">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-5">
+        <div class="about-visual">
+          <div class="about-big-icon">🛍️</div>
+          <div class="about-visual-label">Trusted Since 2026</div>
+        </div>
+      </div>
+      <div class="col-lg-7 ps-lg-5">
+        <div class="section-tag">Why Choose Us</div>
+        <h2 class="section-title text-start mb-4">India's Most Trusted Electronics Destination</h2>
+        <p style="color:var(--text-muted);line-height:1.8;margin-bottom:32px;">
+          ProKart brings you the latest gadgets with genuine warranty, easy returns, and lightning-fast delivery.
+        </p>
+        <div class="about-feature">
+          <div class="about-icon"><i class="fas fa-shield-alt"></i></div>
+          <div>
+            <h6>100% Genuine Products</h6>
+            <p>Every item sold with official brand warranty.</p>
+          </div>
+        </div>
+        <div class="about-feature">
+          <div class="about-icon"><i class="fas fa-undo"></i></div>
+          <div>
+            <h6>Easy 7-Day Returns</h6>
+            <p>Not happy? Return it within 7 days, no questions asked.</p>
+          </div>
+        </div>
+        <div class="about-feature">
+          <div class="about-icon"><i class="fas fa-bolt"></i></div>
+          <div>
+            <h6>Same-Day Delivery</h6>
+            <p>Order before 2 PM and receive your product the same day.</p>
+          </div>
+        </div>
+      </div>
+    </div>
 
-<!-- ─── ABOUT ─── -->
+    <!-- TEAM SECTION -->
     <div class="row mt-5 pt-5" style="border-top: 1px solid var(--border);">
       <div class="col-12 text-center mb-5">
         <div class="section-tag">Meet The Team</div>
@@ -887,10 +976,10 @@
           </div>
         </div>
       </div>
-      <div class="col-md-4">
+       <div class="col-md-4">
         <div class="testimonial-card">
           <div class="testimonial-stars">★★★★☆</div>
-          <p class="testimonial-text">"I recently purchased the HP Victus Gaming Laptop, and I must say, it is an absolute powerhouse. Equipped with a Ryzen 5 5600H processor, 16GB DDR5 RAM, and a 512GB SSD, this laptop delivers an ultimate gaming experience. The NVIDIA RTX 3050 (4GB GDDR6) graphics card ensures smooth and immersive gameplay, making every session a visual treat.
+          <p class="testimonial-text">"I recently purchased the HP Victus Gaming Laptop, and I must say, it is an absolute powerhouse. Equipped with an Intel i5-12500H processor, 16GB DDR5 RAM, and a 512GB SSD, this laptop delivers an ultimate gaming experience. The NVIDIA RTX 3050 (4GB GDDR6) graphics card ensures smooth and immersive gameplay, making every session a visual treat.
 "</p>
           <div class="testimonial-author">
             <div class="author-avatar">A</div>
@@ -924,9 +1013,9 @@
         <div class="footer-brand">KART<span>PRO</span></div>
         <p class="footer-desc">India's trusted electronics store since 2026. Genuine products, amazing prices.</p>
         <div class="footer-social mt-4">
-          <a href="https://www.facebook.com/share/1CiqPE5wkL/"><i class="fab fa-facebook-f"></i></a>
-          <a href="https://x.com/Mujahiddd_04"><i class="fab fa-twitter"></i></a>
-          <a href="https://www.instagram.com/mujahid_1.0x?igsh=NzJwODJkMzBmM3hs"><i class="fab fa-instagram"></i></a>
+          <a href="#"><i class="fab fa-facebook-f"></i></a>
+          <a href="#"><i class="fab fa-twitter"></i></a>
+          <a href=""><i class="fab fa-instagram"></i></a>
           <a href="#"><i class="fab fa-youtube"></i></a>
         </div>
       </div>
@@ -981,5 +1070,73 @@
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.min.js"></script>
 <script src="/static/main.js"></script>
+<script>
+// ── AUTH STATE ──────────────────────────────────────────
+function initAuthState() {
+  const user = localStorage.getItem('prokart_user');
+  const authNav = document.getElementById('authNav');
+  if (!authNav) return;
+
+  if (user) {
+    const initial = user.charAt(0).toUpperCase();
+    const adminLink = (user === 'admin') ? `
+          <button class="dropdown-item-custom" onclick="event.stopPropagation(); window.location.href='admin.html'" style="color:#ffc107;">
+            <i class="fas fa-shield-alt"></i> Admin Panel
+          </button>
+          <hr style="border-color:var(--border);margin:6px 0;">` : '';
+    authNav.innerHTML = `
+      <div class="user-pill" id="userPill" onclick="toggleUserDropdown(event)">
+        <div class="user-avatar-mini">${initial}</div>
+        <span class="user-name-label">${user}</span>
+        <i class="fas fa-chevron-down" style="font-size:0.65rem;color:var(--text-muted);transition:transform 0.2s" id="pillChevron"></i>
+        <div class="user-dropdown" id="userDropdown">
+          <button class="dropdown-item-custom" onclick="event.stopPropagation(); window.location.href='login.html'">
+            <i class="fas fa-user-circle"></i> My Account
+          </button>
+          ${adminLink}
+          <hr style="border-color:var(--border);margin:6px 0;">
+          <button class="dropdown-item-custom logout-btn" onclick="event.stopPropagation(); logout()">
+            <i class="fas fa-sign-out-alt"></i> Logout
+          </button>
+        </div>
+      </div>
+    `;
+  } else {
+    authNav.innerHTML = `
+      <a href="login.html" class="cart-btn" style="text-decoration:none;display:inline-flex;align-items:center;gap:7px;">
+        <i class="fas fa-user"></i> Login
+      </a>
+    `;
+  }
+}
+
+function toggleUserDropdown(e) {
+  e.stopPropagation();
+  const pill = document.getElementById('userPill');
+  const chevron = document.getElementById('pillChevron');
+  pill.classList.toggle('open');
+  if (chevron) chevron.style.transform = pill.classList.contains('open') ? 'rotate(180deg)' : 'rotate(0)';
+}
+
+function logout() {
+  localStorage.removeItem('prokart_token');
+  localStorage.removeItem('prokart_user');
+  initAuthState();
+  showToast('👋 Logged out successfully!');
+}
+
+// Close dropdown when clicking outside
+document.addEventListener('click', function(e) {
+  const pill = document.getElementById('userPill');
+  const chevron = document.getElementById('pillChevron');
+  if (pill && !pill.contains(e.target)) {
+    pill.classList.remove('open');
+    if (chevron) chevron.style.transform = 'rotate(0)';
+  }
+});
+
+// Run on page load
+document.addEventListener('DOMContentLoaded', initAuthState);
+</script>
 </body>
 </html>
