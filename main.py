@@ -37,9 +37,26 @@ app.add_middleware(
 SECRET_KEY = os.getenv("SECRET_KEY") or "fallback_secret_key"
 ALGORITHM = "HS256"
 ADMIN_USERNAME = os.getenv("ADMIN_USERNAME") or "admin"
+ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD") or "mujahid@1234"
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 security = HTTPBearer()
+
+def seed_admin():
+    """Auto-create or update the admin account in MongoDB on startup."""
+    hashed = pwd_context.hash(ADMIN_PASSWORD)
+    existing = user_collection.find_one({"username": ADMIN_USERNAME})
+    if not existing:
+        user_collection.insert_one({"username": ADMIN_USERNAME, "password": hashed})
+        print(f"✅ Admin account created: {ADMIN_USERNAME}")
+    else:
+        user_collection.update_one(
+            {"username": ADMIN_USERNAME},
+            {"$set": {"password": hashed}}
+        )
+        print(f"🔄 Admin account updated: {ADMIN_USERNAME}")
+
+seed_admin()
 
 def hash_password(password: str):
     return pwd_context.hash(password)
