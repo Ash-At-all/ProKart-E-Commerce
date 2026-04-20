@@ -101,22 +101,14 @@ async function filterProducts(cat, btn) {
 }
 
 async function checkout() {
-  try {
-    const response = await fetch(`${API_BASE}/api/checkout`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ cart: cart })
-    });
-    const data = await response.json();
-    showToast('🎉 Order placed!');
-  } catch (error) {
-    showToast('🎉 Order placed! (demo mode)');
+  if (cart.length === 0) {
+    showToast('⚠️ Cart is empty!');
+    return;
   }
-  cart = [];
-  updateCartUI();
-  toggleCart();
+  // Save cart to localStorage for checkout page
+  localStorage.setItem('prokart_cart', JSON.stringify(cart));
+  window.location.href = 'checkout.html';
 }
-
 function toggleCart() {
   document.getElementById('cartSidebar').classList.toggle('open');
   document.getElementById('cartOverlay').classList.toggle('open');
