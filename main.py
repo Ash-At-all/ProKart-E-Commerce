@@ -5,7 +5,7 @@ from fastapi.staticfiles import StaticFiles
 import uvicorn
 
 from jose import jwt, JWTError
-from passlib.context import CryptContext
+import bcrypt as _bcrypt
 from datetime import datetime, timedelta
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
@@ -36,33 +36,32 @@ app.add_middleware(
 # ================= AUTH SETUP =================
 SECRET_KEY = os.getenv("SECRET_KEY") or "fallback_secret_key"
 ALGORITHM = "HS256"
-ADMIN_USERNAME = os.getenv("ADMIN_USERNAME") or "admin"
+ADMIN_USERNAME = os.getenv("ADMIN_USERNAME") or "mujahid2762"
 ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD") or "mujahid@1234"
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 security = HTTPBearer()
+
+def hash_password(password: str) -> str:
+    return _bcrypt.hashpw(password.encode(), _bcrypt.gensalt()).decode()
+
+def verify_password(plain: str, hashed: str) -> bool:
+    return _bcrypt.checkpw(plain.encode(), hashed.encode())
 
 def seed_admin():
     """Auto-create or update the admin account in MongoDB on startup."""
-    hashed = pwd_context.hash(ADMIN_PASSWORD)
+    hashed = hash_password(ADMIN_PASSWORD)
     existing = user_collection.find_one({"username": ADMIN_USERNAME})
     if not existing:
         user_collection.insert_one({"username": ADMIN_USERNAME, "password": hashed})
-        print(f"✅ Admin account created: {ADMIN_USERNAME}")
+        print(f"[OK] Admin account created: {ADMIN_USERNAME}")
     else:
         user_collection.update_one(
             {"username": ADMIN_USERNAME},
             {"$set": {"password": hashed}}
         )
-        print(f"🔄 Admin account updated: {ADMIN_USERNAME}")
+        print(f"[UPDATED] Admin account synced: {ADMIN_USERNAME}")
 
 seed_admin()
-
-def hash_password(password: str):
-    return pwd_context.hash(password)
-
-def verify_password(plain, hashed):
-    return pwd_context.verify(plain, hashed)
 
 def create_token(data: dict):
     data_copy = data.copy()
