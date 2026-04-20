@@ -1041,12 +1041,30 @@ function placeOrder() {
 
   setTimeout(() => {
     // Generate order ID
-    const orderId = 'PKT-' + Math.random().toString(36).substring(2,8).toUpperCase();
-    const email = document.getElementById('email').value;
-    
-    // Clear cart
-    ['prokart_cart', 'cart', 'cartItems', 'proKartCart'].forEach(k => localStorage.removeItem(k));
-    
+    // Generate order ID
+const orderId = 'PKT-' + Math.random().toString(36).substring(2,8).toUpperCase();
+const email = document.getElementById('email').value;
+
+const orderData = {
+  id: orderId,
+  date: new Date().toLocaleDateString('en-IN'),
+  items: [...cart],
+  total: document.getElementById('totalVal').textContent,
+  status: 'Confirmed',
+  address: document.getElementById('address').value + ', ' + 
+           document.getElementById('city').value + ', ' +
+           document.getElementById('state').value + ' - ' +
+           document.getElementById('pincode').value,
+  payment: selectedPayment.toUpperCase(),
+  name: document.getElementById('fullName').value,
+  email: document.getElementById('email').value
+};
+const existingOrders = JSON.parse(localStorage.getItem('prokart_orders') || '[]');
+existingOrders.unshift(orderData);
+localStorage.setItem('prokart_orders', JSON.stringify(existingOrders));
+
+// Clear cart
+['prokart_cart', 'cart', 'cartItems', 'proKartCart'].forEach(k => localStorage.removeItem(k));
     // Update step UI
     document.getElementById('step2').className = 'step done';
     document.getElementById('step2').querySelector('.step-circle').innerHTML = '<i class="fas fa-check" style="font-size:0.8rem"></i>';
