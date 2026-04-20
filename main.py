@@ -23,7 +23,11 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 # ================= CORS =================
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[
+        "https://pro-kart-e-commerce.vercel.app",
+        "http://localhost:5500",   
+        "http://127.0.0.1:5500", 
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -32,6 +36,7 @@ app.add_middleware(
 # ================= AUTH SETUP =================
 SECRET_KEY = os.getenv("SECRET_KEY") or "fallback_secret_key"
 ALGORITHM = "HS256"
+ADMIN_USERNAME = os.getenv("ADMIN_USERNAME") or "admin"
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 security = HTTPBearer()
@@ -54,6 +59,12 @@ def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(securit
         return payload["username"]
     except JWTError:
         raise HTTPException(status_code=401, detail="Invalid token")
+
+def get_admin_user(credentials: HTTPAuthorizationCredentials = Depends(security)):
+    username = get_current_user(credentials)
+    if username != ADMIN_USERNAME:
+        raise HTTPException(status_code=403, detail="Admin access only")
+    return username
 
 # ================= HOME =================
 @app.get("/", response_class=HTMLResponse)
@@ -158,6 +169,62 @@ async def remove_from_cart(product_id: int, username: str = Depends(get_current_
 async def checkout(username: str = Depends(get_current_user)):
     cart_collection.delete_one({"username": username})
     return {"status": "Order placed ✅"}
+
+# ================= ADMIN =================
+@app.get("/api/admin/stats")
+async def admin_stats(username: str = Depends(get_admin_user)):
+    total_products = products_collection.count_documents({})
+    total_users = user_collection.count_documents({})
+    total_orders = cart_collection.count_documents({})
+    return {
+        "products": total_products,
+        "users": total_users,
+        "orders": total_orders
+    }
+
+@app.get("/api/admin/products")
+async def admin_get_products(username: str = Depends(get_admin_user)):
+    prods = list(products_collection.find({}, {"_id": 0}))
+    return {"products": prods}
+
+@app.post("/api/admin/add-product")
+async def admin_add_product(
+    name: str,
+    price: float,
+    original: float,
+    category: str,
+    image: str = "",
+    badge: str = "",
+    rating: float = 4.0,
+    reviews: int = 0,
+    username: str = Depends(get_admin_user)
+):
+    import time
+    product = {
+        "id": int(time.time() * 1000) % 2147483647,
+        "name": name,
+        "price": price,
+        "original": original,
+        "category": category,
+        "image": image,
+        "badge": badge,
+        "rating": rating,
+        "reviews": reviews
+    }
+    products_collection.insert_one(product)
+    return {"status": "Product added ✅", "product": {k: v for k, v in product.items() if k != "_id"}}
+
+@app.delete("/api/admin/delete-product/{product_id}")
+async def admin_delete_product(product_id: int, username: str = Depends(get_admin_user)):
+    result = products_collection.delete_one({"id": product_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Product not found")
+    return {"status": "Product deleted ✅"}
+
+@app.get("/api/admin/users")
+async def admin_get_users(username: str = Depends(get_admin_user)):
+    users = list(user_collection.find({}, {"_id": 0, "password": 0}))
+    return {"users": users}
 
 # ================= HEALTH =================
 @app.get("/api/health")
