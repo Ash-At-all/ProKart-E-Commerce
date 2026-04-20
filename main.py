@@ -235,7 +235,39 @@ async def admin_delete_product(product_id: int, username: str = Depends(get_admi
     result = products_collection.delete_one({"id": product_id})
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Product not found")
-    return {"status": "Product deleted ✅"}
+    return {"status": "Product deleted"}
+
+@app.put("/api/admin/update-product/{product_id}")
+async def admin_update_product(
+    product_id: int,
+    name: str = None,
+    price: float = None,
+    original: float = None,
+    category: str = None,
+    badge: str = None,
+    rating: float = None,
+    reviews: int = None,
+    username: str = Depends(get_admin_user)
+):
+    updates = {}
+    if name is not None: updates["name"] = name
+    if price is not None: updates["price"] = price
+    if original is not None: updates["original"] = original
+    if category is not None: updates["category"] = category
+    if badge is not None: updates["badge"] = badge
+    if rating is not None: updates["rating"] = rating
+    if reviews is not None: updates["reviews"] = reviews
+    if not updates:
+        raise HTTPException(status_code=400, detail="No fields to update")
+    result = products_collection.update_one({"id": product_id}, {"$set": updates})
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Product not found")
+    return {"status": "Product updated"}
+
+@app.get("/api/admin/orders")
+async def admin_get_orders(username: str = Depends(get_admin_user)):
+    orders = list(cart_collection.find({}, {"_id": 0}))
+    return {"orders": orders}
 
 @app.get("/api/admin/users")
 async def admin_get_users(username: str = Depends(get_admin_user)):
