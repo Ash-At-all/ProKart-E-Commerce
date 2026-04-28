@@ -40,6 +40,30 @@
   .btn-submit { width: 100%; background: linear-gradient(135deg, var(--accent), #00b8d9); color: var(--bg-dark); border: none; border-radius: 10px; padding: 14px; font-family: 'Syne', sans-serif; font-weight: 800; font-size: 0.95rem; letter-spacing: 1px; cursor: pointer; margin-top: 24px; box-shadow: 0 0 24px rgba(0,229,255,0.25); transition: all 0.2s; text-transform: uppercase; }
   .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 0 40px rgba(0,229,255,0.4); }
   .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+  /* Password toggle */
+  .pw-toggle {
+    position: absolute; right: 14px; top: 50%;
+    transform: translateY(-50%);
+    background: none; border: none;
+    color: var(--text-muted); cursor: pointer;
+    font-size: 0.88rem; padding: 2px 4px;
+    transition: color 0.2s;
+  }
+  .pw-toggle:hover { color: var(--accent); }
+  .input-wrap .form-input { padding-right: 40px; }
+  /* Strength meter */
+  .strength-bar {
+    display: flex; gap: 4px; margin-top: 8px;
+  }
+  .strength-seg {
+    flex: 1; height: 3px; border-radius: 2px;
+    background: var(--border);
+    transition: background 0.3s;
+  }
+  .strength-label {
+    font-size: 0.72rem; font-weight: 700;
+    margin-top: 5px; transition: color 0.3s;
+  }
   .divider { display: flex; align-items: center; gap: 12px; margin: 24px 0; color: var(--text-muted); font-size: 0.78rem; }
   .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
   .social-btns { display: flex; gap: 10px; }
@@ -79,7 +103,11 @@
         <label class="form-label">Password</label>
         <div class="input-wrap">
           <i class="fas fa-lock"></i>
-          <input type="password" class="form-input" id="loginPassword" placeholder="••••••••">
+          <input type="password" class="form-input" id="loginPassword" placeholder="••••••••"
+            onkeydown="if(event.key==='Enter')handleLogin()">
+          <button type="button" class="pw-toggle" onclick="togglePw('loginPassword', this)" tabindex="-1">
+            <i class="fas fa-eye"></i>
+          </button>
         </div>
         <div class="forgot"><a href="#">Forgot password?</a></div>
       </div>
@@ -111,8 +139,19 @@
         <label class="form-label">Password</label>
         <div class="input-wrap">
           <i class="fas fa-lock"></i>
-          <input type="password" class="form-input" id="signupPassword" placeholder="••••••••">
+          <input type="password" class="form-input" id="signupPassword" placeholder="••••••••"
+            oninput="checkStrength(this.value)">
+          <button type="button" class="pw-toggle" onclick="togglePw('signupPassword', this)" tabindex="-1">
+            <i class="fas fa-eye"></i>
+          </button>
         </div>
+        <div class="strength-bar">
+          <div class="strength-seg" id="seg1"></div>
+          <div class="strength-seg" id="seg2"></div>
+          <div class="strength-seg" id="seg3"></div>
+          <div class="strength-seg" id="seg4"></div>
+        </div>
+        <div class="strength-label" id="strengthLabel" style="color:var(--text-muted)"></div>
       </div>
       <button class="btn-submit" id="signupBtn" onclick="handleSignup()">
         <i class="fas fa-user-plus"></i> Create Account
@@ -130,6 +169,39 @@
 </div>
 <script>
 const API_BASE = 'https://prokart-e-commerce.onrender.com';
+
+// Password visibility toggle
+function togglePw(inputId, btn) {
+  const input = document.getElementById(inputId);
+  const icon = btn.querySelector('i');
+  if (input.type === 'password') {
+    input.type = 'text';
+    icon.className = 'fas fa-eye-slash';
+  } else {
+    input.type = 'password';
+    icon.className = 'fas fa-eye';
+  }
+}
+
+// Password strength checker
+function checkStrength(pw) {
+  const segs = [document.getElementById('seg1'), document.getElementById('seg2'),
+                document.getElementById('seg3'), document.getElementById('seg4')];
+  const label = document.getElementById('strengthLabel');
+  if (!segs[0]) return;
+  let score = 0;
+  if (pw.length >= 6) score++;
+  if (pw.length >= 10) score++;
+  if (/[A-Z]/.test(pw) && /[0-9]/.test(pw)) score++;
+  if (/[^A-Za-z0-9]/.test(pw)) score++;
+  const colors = ['#ef5350','#ff9800','#ffc107','#00e676'];
+  const labels = ['Weak','Fair','Good','Strong'];
+  segs.forEach((seg, i) => {
+    seg.style.background = i < score ? colors[score - 1] : 'var(--border)';
+  });
+  label.textContent = pw.length ? labels[score - 1] || '' : '';
+  label.style.color = pw.length ? colors[score - 1] : 'var(--text-muted)';
+}
 
 function switchTab(tab) {
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
