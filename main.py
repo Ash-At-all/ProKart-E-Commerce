@@ -9,7 +9,7 @@ import bcrypt as _bcrypt
 from datetime import datetime, timedelta
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
-from mongo import cart_collection, user_collection, products_collection
+from mongo import cart_collection, user_collection, products_collection, orders_collection
 import os
 from dotenv import load_dotenv
 
@@ -95,6 +95,17 @@ async def get_products(category: str = "all"):
     else:
         prods = list(products_collection.find({"category": category}, {"_id": 0}))
     return {"products": prods}
+
+@app.get("/api/products/{product_id}")
+async def get_product(product_id: int):
+    product = products_collection.find_one({"id": product_id}, {"_id": 0})
+    if not product:
+        raise HTTPException(status_code=404, detail="Product not found")
+    return product
+
+@app.get("/product", response_class=HTMLResponse)
+async def product_page():
+    return FileResponse("product.html")
 
 # ================= AUTH =================
 @app.post("/api/signup")
@@ -182,16 +193,49 @@ async def remove_from_cart(product_id: int, username: str = Depends(get_current_
 
 # ================= CHECKOUT =================
 @app.post("/api/checkout")
-async def checkout(username: str = Depends(get_current_user)):
+async def checkout(
+    fullName: str = None,
+    email: str = None,
+    phone: str = None,
+    address: str = None,
+    city: str = None,
+    state: str = None,
+    pincode: str = None,
+    payment: str = "CARD",
+    username: str = Depends(get_current_user)
+):
+    # Get current cart items
+    cart = cart_collection.find_one({"username": username})
+    if not cart or not cart.get("items"):
+        raise HTTPException(status_code=400, detail="Cart is empty")
+
+    # Create an order object
+    order = {
+        "order_id": 'PKT-' + os.urandom(3).hex().upper(),
+        "username": username,
+        "customer_name": fullName or username,
+        "email": email,
+        "phone": phone,
+        "address": f"{address}, {city}, {state} - {pincode}" if address else "Not provided",
+        "payment": payment,
+        "items": cart["items"],
+        "total": cart["total"],
+        "timestamp": datetime.utcnow()
+    }
+
+    # Save to orders_collection
+    orders_collection.insert_one(order)
+
+    # Clear the cart
     cart_collection.delete_one({"username": username})
-    return {"status": "Order placed ✅"}
+    return {"status": "Order placed ✅", "order_id": order["order_id"]}
 
 # ================= ADMIN =================
 @app.get("/api/admin/stats")
 async def admin_stats(username: str = Depends(get_admin_user)):
     total_products = products_collection.count_documents({})
     total_users = user_collection.count_documents({})
-    total_orders = cart_collection.count_documents({})
+    total_orders = orders_collection.count_documents({})
     return {
         "products": total_products,
         "users": total_users,
@@ -266,7 +310,7 @@ async def admin_update_product(
 
 @app.get("/api/admin/orders")
 async def admin_get_orders(username: str = Depends(get_admin_user)):
-    orders = list(cart_collection.find({}, {"_id": 0}))
+    orders = list(orders_collection.find({}, {"_id": 0}))
     return {"orders": orders}
 
 @app.get("/api/admin/users")
