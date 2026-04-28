@@ -462,6 +462,53 @@
   }
   .toast-msg.show { transform: translateX(-50%) translateY(0); }
 
+  /* Search bar */
+  .orders-search-wrap {
+    position: relative;
+    max-width: 400px;
+    margin-bottom: 24px;
+  }
+  .orders-search-wrap i {
+    position: absolute; left: 14px; top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted); font-size: 0.85rem;
+    pointer-events: none;
+  }
+  .orders-search-wrap input {
+    width: 100%;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 11px 14px 11px 38px;
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    font-size: 0.88rem;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .orders-search-wrap input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(0,229,255,0.08);
+  }
+  .orders-search-wrap input::placeholder { color: var(--text-muted); }
+
+  /* Back to top */
+  #backToTop {
+    position: fixed; bottom: 28px; right: 28px;
+    width: 46px; height: 46px;
+    background: linear-gradient(135deg, var(--accent), #00b8d9);
+    color: var(--bg-dark);
+    border: none; border-radius: 12px;
+    font-size: 1.1rem; cursor: pointer;
+    box-shadow: 0 0 20px rgba(0,229,255,0.3);
+    transition: all 0.3s;
+    opacity: 0; pointer-events: none;
+    z-index: 1500;
+    display: flex; align-items: center; justify-content: center;
+  }
+  #backToTop.visible { opacity: 1; pointer-events: all; }
+  #backToTop:hover { transform: translateY(-3px); }
+
   @media (max-width: 768px) {
     .order-header { padding: 16px 18px; }
     .order-body { padding: 18px 18px; }
@@ -528,6 +575,12 @@
     </div>
   </div>
 
+  <!-- SEARCH BAR -->
+  <div class="orders-search-wrap" id="ordersSearchWrap" style="display:none">
+    <i class="fas fa-search"></i>
+    <input type="text" id="ordersSearch" placeholder="Search by Order ID or product…" oninput="liveSearchOrders(this.value)">
+  </div>
+
   <!-- FILTER TABS -->
   <div class="filter-tabs" id="filterTabs" style="display:none">
     <button class="tab-btn active" onclick="filterOrders('all', this)">All Orders</button>
@@ -573,6 +626,9 @@
 <!-- Toast -->
 <div class="toast-msg" id="toast"></div>
 
+<!-- Back to Top -->
+<button id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Back to top"><i class="fas fa-arrow-up"></i></button>
+
 <script>
 let allOrders = [];
 let cancelTargetId = null;
@@ -602,7 +658,28 @@ function loadOrders() {
   if (allOrders.length > 0) {
     document.getElementById('statsBar').style.display = 'flex';
     document.getElementById('filterTabs').style.display = 'flex';
+    document.getElementById('ordersSearchWrap').style.display = 'block';
   }
+
+  // Back to top
+  const btt = document.getElementById('backToTop');
+  if (btt) {
+    window.addEventListener('scroll', () => {
+      btt.classList.toggle('visible', window.scrollY > 300);
+    }, { passive: true });
+  }
+}
+
+// ── LIVE SEARCH ──────────────────────────────────────────
+function liveSearchOrders(q) {
+  q = q.toLowerCase().trim();
+  if (!q) { renderOrders(allOrders); return; }
+  const filtered = allOrders.filter(o => {
+    const idMatch = (o.id || '').toLowerCase().includes(q);
+    const itemMatch = (o.items || []).some(i => (i.name || '').toLowerCase().includes(q));
+    return idMatch || itemMatch;
+  });
+  renderOrders(filtered);
 }
 
 // ── STATS ────────────────────────────────────────────────
