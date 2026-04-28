@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Product — ProKart</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css">
+<style>
+:root{--bg-dark:#080c14;--bg-card:#0e1420;--bg-card2:#111827;--accent:#00e5ff;--accent2:#7b2fff;--text:#e8eaf6;--text-muted:#8892a4;--border:rgba(0,229,255,0.12);--success:#00e676;--error:#ef5350;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg-dark);color:var(--text);font-family:'Syne',sans-serif;min-height:100vh;}
+
+/* NAV */
+.navbar{background:rgba(8,12,20,0.96);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:14px 0;position:sticky;top:0;z-index:1000;}
+.nav-brand{font-family:'Orbitron',monospace;font-size:1.4rem;font-weight:900;color:var(--accent);text-decoration:none;letter-spacing:2px;}
+.nav-brand span{color:var(--accent2);}
+.nav-back{color:var(--text-muted);font-size:0.85rem;font-weight:600;text-decoration:none;display:flex;align-items:center;gap:6px;transition:color 0.2s;}
+.nav-back:hover{color:var(--accent);}
+
+/* BREADCRUMB */
+.breadcrumb-wrap{padding:20px 0 8px;font-size:0.78rem;color:var(--text-muted);}
+.breadcrumb-wrap a{color:var(--text-muted);text-decoration:none;transition:color 0.2s;}
+.breadcrumb-wrap a:hover{color:var(--accent);}
+.breadcrumb-wrap span{color:var(--text);}
+
+/* PRODUCT LAYOUT */
+.product-section{padding:32px 0 80px;}
+.img-panel{background:linear-gradient(135deg,#0a1020,#111827);border:1px solid var(--border);border-radius:24px;overflow:hidden;display:flex;align-items:center;justify-content:center;min-height:420px;position:relative;}
+.img-panel img{max-width:82%;max-height:380px;object-fit:contain;transition:transform 0.5s;}
+.img-panel:hover img{transform:scale(1.06);}
+.discount-badge-big{position:absolute;top:18px;left:18px;background:linear-gradient(135deg,#ff4444,#c62828);color:#fff;font-size:0.85rem;font-weight:800;padding:6px 14px;border-radius:8px;letter-spacing:0.5px;}
+
+/* DETAIL PANEL */
+.detail-panel{padding:8px 0 0 24px;}
+.prod-cat-label{font-size:0.72rem;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--accent);margin-bottom:12px;}
+.prod-title{font-family:'Orbitron',monospace;font-size:clamp(1.1rem,2.5vw,1.55rem);font-weight:700;line-height:1.3;margin-bottom:16px;}
+.rating-row{display:flex;align-items:center;gap:10px;margin-bottom:20px;}
+.stars{color:#ffc107;font-size:1rem;}
+.review-count{color:var(--text-muted);font-size:0.82rem;}
+.price-block{margin-bottom:20px;}
+.price-current{font-family:'Orbitron',monospace;font-size:2rem;font-weight:900;color:var(--accent);}
+.price-original{font-size:1rem;color:var(--text-muted);text-decoration:line-through;margin-left:12px;}
+.savings-pill{display:inline-block;background:rgba(0,230,118,0.1);border:1px solid rgba(0,230,118,0.2);color:var(--success);font-size:0.78rem;font-weight:700;padding:4px 12px;border-radius:6px;margin-top:8px;}
+
+/* TRUST BADGES */
+.trust-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:24px;}
+.trust-pill{display:flex;align-items:center;gap:6px;background:rgba(0,229,255,0.05);border:1px solid var(--border);border-radius:8px;padding:8px 14px;font-size:0.78rem;font-weight:700;color:var(--text-muted);}
+.trust-pill i{color:var(--accent);}
+
+/* BUTTONS */
+.btn-add-big{background:linear-gradient(135deg,var(--accent),#00b8d9);color:var(--bg-dark);border:none;border-radius:12px;padding:15px 32px;font-family:'Syne',sans-serif;font-weight:800;font-size:1rem;letter-spacing:0.5px;cursor:pointer;transition:all 0.25s;display:inline-flex;align-items:center;gap:8px;}
+.btn-add-big:hover{box-shadow:0 0 36px rgba(0,229,255,0.45);transform:translateY(-2px);}
+.btn-buy-now{background:transparent;color:var(--accent2);border:2px solid var(--accent2);border-radius:12px;padding:13px 28px;font-family:'Syne',sans-serif;font-weight:800;font-size:1rem;cursor:pointer;transition:all 0.25s;display:inline-flex;align-items:center;gap:8px;margin-left:12px;}
+.btn-buy-now:hover{background:rgba(123,47,255,0.15);transform:translateY(-2px);}
+.btn-row{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:24px;}
+
+/* HIGHLIGHTS */
+.highlights{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:22px;margin-top:8px;}
+.highlights-title{font-family:'Orbitron',monospace;font-size:0.82rem;font-weight:700;color:var(--accent);margin-bottom:14px;letter-spacing:1px;}
+.highlight-item{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;font-size:0.85rem;color:var(--text-muted);}
+.highlight-item i{color:var(--success);margin-top:2px;flex-shrink:0;}
+
+/* RELATED */
+.related-section{padding:60px 0;}
+.section-title-sm{font-family:'Orbitron',monospace;font-size:1.1rem;font-weight:700;margin-bottom:28px;}
+.section-title-sm span{color:var(--accent);}
+
+/* PRODUCT CARD (same style as homepage) */
+.product-card{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;overflow:hidden;transition:all 0.3s;cursor:pointer;}
+.product-card:hover{transform:translateY(-6px);border-color:rgba(0,229,255,0.3);box-shadow:0 12px 40px rgba(0,229,255,0.12);}
+.product-img-wrap{position:relative;background:linear-gradient(135deg,#0a1020,#111827);overflow:hidden;height:180px;display:flex;align-items:center;justify-content:center;}
+.product-img-wrap img{max-width:80%;max-height:160px;object-fit:contain;transition:transform 0.4s;}
+.product-card:hover .product-img-wrap img{transform:scale(1.08);}
+.product-info{padding:16px 18px;}
+.product-category{font-size:0.68rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:6px;}
+.product-name{font-weight:700;font-size:0.88rem;line-height:1.4;margin-bottom:8px;color:var(--text);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.product-rating{color:#ffc107;font-size:0.8rem;margin-bottom:10px;}
+.product-rating span{color:var(--text-muted);font-size:0.72rem;margin-left:4px;}
+.price-new{font-family:'Orbitron',monospace;font-size:0.95rem;font-weight:700;color:var(--accent);}
+.price-old{font-size:0.78rem;color:var(--text-muted);text-decoration:line-through;margin-left:6px;}
+.btn-cart{width:100%;margin-top:12px;background:rgba(0,229,255,0.08);border:1px solid rgba(0,229,255,0.2);color:var(--accent);border-radius:8px;padding:9px;font-family:'Syne',sans-serif;font-weight:700;font-size:0.82rem;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:6px;}
+.btn-cart:hover,.btn-cart.added{background:var(--accent);color:var(--bg-dark);}
+
+/* TOAST */
+.toast-msg{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(80px);background:rgba(0,229,255,0.12);border:1px solid rgba(0,229,255,0.3);color:var(--accent);padding:12px 26px;border-radius:8px;font-weight:700;font-size:0.85rem;z-index:9999;transition:transform 0.35s;pointer-events:none;backdrop-filter:blur(10px);}
+.toast-msg.show{transform:translateX(-50%) translateY(0);}
+
+/* LOADING */
+.loading-state{display:flex;align-items:center;justify-content:center;min-height:400px;flex-direction:column;gap:16px;color:var(--text-muted);}
+.spinner{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* NOT FOUND */
+.not-found{text-align:center;padding:80px 20px;color:var(--text-muted);}
+.not-found i{font-size:4rem;display:block;margin-bottom:20px;color:var(--border);}
+
+#backToTop{position:fixed;bottom:28px;right:28px;width:46px;height:46px;background:linear-gradient(135deg,var(--accent),#00b8d9);color:var(--bg-dark);border:none;border-radius:12px;font-size:1.1rem;cursor:pointer;box-shadow:0 0 20px rgba(0,229,255,0.3);transition:all 0.3s;opacity:0;pointer-events:none;z-index:1500;display:flex;align-items:center;justify-content:center;}
+#backToTop.visible{opacity:1;pointer-events:all;}
+#backToTop:hover{transform:translateY(-3px);}
+
+@media(max-width:768px){
+  .detail-panel{padding:24px 0 0;}
+  .price-current{font-size:1.5rem;}
+  .btn-buy-now{margin-left:0;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="container d-flex align-items-center justify-content-between">
+    <a href="index.html" class="nav-brand">KART<span>PRO</span></a>
+    <div class="d-flex align-items-center gap-3">
+      <a href="index.html" class="nav-back"><i class="fas fa-arrow-left"></i> Back to Store</a>
+    </div>
+  </div>
+</nav>
+
+<!-- MAIN CONTENT -->
+<div class="container">
+  <div class="breadcrumb-wrap" id="breadcrumb">
+    <a href="index.html">Home</a> &nbsp;/&nbsp; <span id="bcCategory">...</span> &nbsp;/&nbsp; <span id="bcName">Loading...</span>
+  </div>
+
+  <!-- LOADING STATE -->
+  <div class="loading-state" id="loadingState">
+    <div class="spinner"></div>
+    <div>Loading product...</div>
+  </div>
+
+  <!-- PRODUCT DETAIL -->
+  <div class="product-section" id="productDetail" style="display:none;">
+    <div class="row g-4 align-items-start">
+      <!-- Image -->
+      <div class="col-lg-5">
+        <div class="img-panel">
+          <img id="prodImg" src="" alt="">
+          <div class="discount-badge-big" id="discountBadge" style="display:none;"></div>
+        </div>
+      </div>
+      <!-- Details -->
+      <div class="col-lg-7">
+        <div class="detail-panel">
+          <div class="prod-cat-label" id="prodCat"></div>
+          <h1 class="prod-title" id="prodName"></h1>
+          <div class="rating-row">
+            <div class="stars" id="prodStars"></div>
+            <div class="review-count" id="prodReviews"></div>
+          </div>
+          <div class="price-block">
+            <span class="price-current" id="prodPrice"></span>
+            <span class="price-original" id="prodOriginal"></span>
+            <div class="savings-pill" id="prodSavings" style="display:none;"></div>
+          </div>
+          <div class="trust-row">
+            <div class="trust-pill"><i class="fas fa-shield-alt"></i> Official Warranty</div>
+            <div class="trust-pill"><i class="fas fa-undo"></i> 7-Day Return</div>
+            <div class="trust-pill"><i class="fas fa-truck"></i> Same-Day Delivery</div>
+            <div class="trust-pill"><i class="fas fa-lock"></i> Secure Payment</div>
+          </div>
+          <div class="btn-row">
+            <button class="btn-add-big" id="addCartBtn" onclick="addToCartFromPage()">
+              <i class="fas fa-shopping-cart"></i> Add to Cart
+            </button>
+            <button class="btn-buy-now" onclick="buyNow()">
+              <i class="fas fa-bolt"></i> Buy Now
+            </button>
+          </div>
+          <div class="highlights">
+            <div class="highlights-title"><i class="fas fa-list-ul me-2"></i>Product Highlights</div>
+            <div id="highlightsList"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NOT FOUND -->
+  <div class="not-found" id="notFound" style="display:none;">
+    <i class="fas fa-box-open"></i>
+    <h3 style="font-family:'Orbitron',monospace;font-size:1.1rem;margin-bottom:8px;">Product Not Found</h3>
+    <p style="margin-bottom:20px;">This product doesn't exist or was removed.</p>
+    <a href="index.html" style="color:var(--accent);font-weight:700;text-decoration:none;">← Back to Store</a>
+  </div>
+</div>
+
+<!-- RELATED PRODUCTS -->
+<div id="relatedSection" style="display:none;">
+  <div class="container">
+    <div class="related-section">
+      <div class="section-title-sm">Related <span>Products</span></div>
+      <div class="row g-4" id="relatedGrid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast-msg" id="toast"></div>
+<button id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Back to top">
+  <i class="fas fa-arrow-up"></i>
+</button>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.min.js"></script>
+<script>
+const API_BASE = 'https://prokart-e-commerce.onrender.com';
+let currentProduct = null;
+let cart = JSON.parse(localStorage.getItem('prokart_cart') || '[]');
+
+// ── GET PRODUCT ID FROM URL ─────────────────────────────
+const params = new URLSearchParams(window.location.search);
+const productId = parseInt(params.get('id'));
+
+// ── LOAD PRODUCT ────────────────────────────────────────
+async function loadProduct() {
+  if (!productId) { showNotFound(); return; }
+  try {
+    const res = await fetch(`${API_BASE}/api/products/${productId}`);
+    if (!res.ok) { showNotFound(); return; }
+    currentProduct = await res.json();
+    renderProduct(currentProduct);
+    loadRelated(currentProduct.category, currentProduct.id);
+  } catch(e) { showNotFound(); }
+}
+
+function renderProduct(p) {
+  document.title = p.name + ' — ProKart';
+
+  // Breadcrumb
+  document.getElementById('bcCategory').textContent = p.category.charAt(0).toUpperCase() + p.category.slice(1);
+  document.getElementById('bcCategory').onclick = () => window.location.href = `index.html#products`;
+  document.getElementById('bcName').textContent = p.name.length > 40 ? p.name.substring(0,40)+'…' : p.name;
+
+  // Image
+  const img = document.getElementById('prodImg');
+  img.src = p.image || 'https://via.placeholder.com/400x400?text=No+Image';
+  img.alt = p.name;
+  img.onerror = () => img.src = 'https://via.placeholder.com/400x400?text=No+Image';
+
+  // Discount badge
+  const discount = p.original > p.price ? Math.round(((p.original - p.price) / p.original) * 100) : 0;
+  if (discount >= 5) {
+    const db = document.getElementById('discountBadge');
+    db.textContent = '-' + discount + '% OFF';
+    db.style.display = 'block';
+  }
+
+  document.getElementById('prodCat').textContent = p.category.toUpperCase();
+  document.getElementById('prodName').textContent = p.name;
+
+  // Stars
+  const stars = '★'.repeat(Math.floor(p.rating || 0)) + '☆'.repeat(5 - Math.floor(p.rating || 0));
+  document.getElementById('prodStars').textContent = stars;
+  document.getElementById('prodReviews').textContent = `(${(p.reviews || 0).toLocaleString('en-IN')} reviews)`;
+
+  // Price
+  document.getElementById('prodPrice').textContent = '₹' + (p.price || 0).toLocaleString('en-IN');
+  if (p.original > p.price) {
+    document.getElementById('prodOriginal').textContent = '₹' + p.original.toLocaleString('en-IN');
+    const saved = p.original - p.price;
+    const sv = document.getElementById('prodSavings');
+    sv.textContent = `💚 You save ₹${saved.toLocaleString('en-IN')} (${discount}% off)`;
+    sv.style.display = 'inline-block';
+  }
+
+  // Highlights
+  const highlights = [
+    `Category: ${p.category.charAt(0).toUpperCase() + p.category.slice(1)}`,
+    `Rating: ${p.rating || 'N/A'} / 5.0`,
+    `${(p.reviews || 0).toLocaleString('en-IN')} verified customer reviews`,
+    'Official brand warranty included',
+    '100% genuine product',
+    p.badge ? `Special: ${p.badge} item` : 'Free shipping above ₹999'
+  ];
+  document.getElementById('highlightsList').innerHTML = highlights.map(h =>
+    `<div class="highlight-item"><i class="fas fa-check-circle"></i><span>${h}</span></div>`
+  ).join('');
+
+  document.getElementById('loadingState').style.display = 'none';
+  document.getElementById('productDetail').style.display = 'block';
+}
+
+function showNotFound() {
+  document.getElementById('loadingState').style.display = 'none';
+  document.getElementById('notFound').style.display = 'block';
+}
+
+// ── RELATED PRODUCTS ────────────────────────────────────
+async function loadRelated(category, excludeId) {
+  try {
+    const res = await fetch(`${API_BASE}/api/products?category=${category}`);
+    const data = await res.json();
+    const related = (data.products || []).filter(p => p.id !== excludeId).slice(0, 4);
+    if (!related.length) return;
+    document.getElementById('relatedSection').style.display = 'block';
+    document.getElementById('relatedGrid').innerHTML = related.map(p => `
+      <div class="col-lg-3 col-md-6 col-sm-6">
+        <div class="product-card" onclick="window.location.href='product.html?id=${p.id}'">
+          <div class="product-img-wrap">
+            <img src="${p.image || ''}" alt="${p.name}" loading="lazy"
+                 onerror="this.src='https://via.placeholder.com/200?text=No+Image'">
+          </div>
+          <div class="product-info">
+            <div class="product-category">${p.category.toUpperCase()}</div>
+            <div class="product-name">${p.name}</div>
+            <div class="product-rating">
+              ${'★'.repeat(Math.floor(p.rating||0))}${'☆'.repeat(5-Math.floor(p.rating||0))}
+              <span>(${(p.reviews||0).toLocaleString()})</span>
+            </div>
+            <div>
+              <span class="price-new">₹${(p.price||0).toLocaleString('en-IN')}</span>
+              ${p.original > p.price ? `<span class="price-old">₹${p.original.toLocaleString('en-IN')}</span>` : ''}
+            </div>
+            <button class="btn-cart" id="rbtn-${p.id}" onclick="event.stopPropagation(); addRelatedToCart(${p.id})">
+              <i class="fas fa-shopping-cart"></i> Add to Cart
+            </button>
+          </div>
+        </div>
+      </div>`).join('');
+  } catch(e) {}
+}
+
+// ── CART ────────────────────────────────────────────────
+function addToCartFromPage() {
+  if (!currentProduct) return;
+  const existing = cart.find(c => c.id === currentProduct.id);
+  if (existing) { existing.qty += 1; } else { cart.push({...currentProduct, qty: 1}); }
+  localStorage.setItem('prokart_cart', JSON.stringify(cart));
+  showToast('🛒 ' + currentProduct.name.substring(0,28) + '… added!');
+  const btn = document.getElementById('addCartBtn');
+  btn.innerHTML = '<i class="fas fa-check"></i> Added!';
+  btn.style.background = 'linear-gradient(135deg,var(--success),#00c853)';
+  setTimeout(() => {
+    btn.innerHTML = '<i class="fas fa-shopping-cart"></i> Add to Cart';
+    btn.style.background = '';
+  }, 1800);
+}
+
+function buyNow() {
+  if (!currentProduct) return;
+  localStorage.setItem('prokart_cart', JSON.stringify([{...currentProduct, qty: 1}]));
+  window.location.href = 'checkout.html';
+}
+
+function addRelatedToCart(id) {
+  const p = { id };
+  const existing = cart.find(c => c.id === id);
+  if (existing) { existing.qty += 1; } else { cart.push({id, qty: 1}); }
+  localStorage.setItem('prokart_cart', JSON.stringify(cart));
+  const btn = document.getElementById('rbtn-' + id);
+  if (btn) { btn.classList.add('added'); btn.innerHTML = '<i class="fas fa-check"></i> Added!'; setTimeout(() => { btn.classList.remove('added'); btn.innerHTML = '<i class="fas fa-shopping-cart"></i> Add to Cart'; }, 1500); }
+  showToast('🛒 Added to cart!');
+}
+
+// ── TOAST ────────────────────────────────────────────────
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// ── BACK TO TOP ──────────────────────────────────────────
+const btt = document.getElementById('backToTop');
+window.addEventListener('scroll', () => btt.classList.toggle('visible', window.scrollY > 300), {passive:true});
+
+// ── INIT ─────────────────────────────────────────────────
+loadProduct();
+</script>
+</body>
+</html>
