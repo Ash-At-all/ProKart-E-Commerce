@@ -686,6 +686,314 @@
 
   /* wrapper spacing */
   .wrapper { padding: 90px 0; }
+
+  /* ── SORT BAR ── */
+  .sort-search-bar {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    max-width: 700px;
+    margin: 0 auto 36px;
+    flex-wrap: wrap;
+  }
+  .search-field-wrap {
+    position: relative;
+    flex: 1;
+    min-width: 180px;
+  }
+  .search-field-wrap i {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    pointer-events: none;
+  }
+  .search-field-wrap input {
+    width: 100%;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 11px 14px 11px 38px;
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    font-size: 0.88rem;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .search-field-wrap input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(0,229,255,0.08);
+  }
+  .search-field-wrap input::placeholder { color: var(--text-muted); }
+  .sort-select {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 11px 14px;
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    font-size: 0.82rem;
+    outline: none;
+    cursor: pointer;
+    transition: border-color 0.2s;
+    white-space: nowrap;
+  }
+  .sort-select:focus { border-color: var(--accent); }
+  .sort-select option { background: var(--bg-card2); }
+
+  /* ── DISCOUNT CHIP ── */
+  .discount-chip {
+    position: absolute;
+    top: 14px; right: 14px;
+    background: linear-gradient(135deg, #ff4444, #c62828);
+    color: #fff;
+    font-size: 0.65rem;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    z-index: 2;
+  }
+
+  /* ── QUICK VIEW ── */
+  .quick-view-overlay {
+    position: absolute; inset: 0;
+    background: rgba(0,0,0,0.55);
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0;
+    transition: opacity 0.25s;
+    border-radius: 8px;
+  }
+  .quick-view-overlay span {
+    background: var(--accent);
+    color: var(--bg-dark);
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 0.78rem;
+    padding: 8px 16px;
+    border-radius: 6px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .product-img-wrap:hover .quick-view-overlay { opacity: 1; }
+
+  /* QV MODAL */
+  .qv-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.75);
+    backdrop-filter: blur(6px);
+    z-index: 9999;
+    display: flex; align-items: center; justify-content: center;
+    padding: 20px;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.3s;
+  }
+  .qv-overlay.open { opacity: 1; pointer-events: all; }
+  .qv-box {
+    background: var(--bg-card2);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 32px;
+    max-width: 840px; width: 100%;
+    max-height: 90vh; overflow-y: auto;
+    position: relative;
+    box-shadow: 0 0 60px rgba(0,229,255,0.15);
+    transform: scale(0.92); transition: transform 0.3s;
+  }
+  .qv-overlay.open .qv-box { transform: scale(1); }
+  .qv-close {
+    position: absolute; top: 16px; right: 16px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    width: 36px; height: 36px;
+    border-radius: 50%; font-size: 1rem;
+    cursor: pointer; transition: all 0.2s;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .qv-close:hover { background: rgba(239,83,80,0.15); color: #ef5350; border-color: #ef5350; }
+  .qv-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    align-items: center;
+  }
+  .qv-img-wrap {
+    background: linear-gradient(135deg, #0a1020, #111827);
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+    aspect-ratio: 1;
+    display: flex; align-items: center; justify-content: center;
+    border: 1px solid var(--border);
+  }
+  .qv-img-wrap img {
+    max-width: 85%; max-height: 85%;
+    object-fit: contain;
+    transition: transform 0.4s;
+  }
+  .qv-img-wrap:hover img { transform: scale(1.06); }
+  .qv-discount-tag {
+    position: absolute; top: 12px; left: 12px;
+    background: linear-gradient(135deg, #ff4444, #c62828);
+    color: #fff; font-size: 0.75rem; font-weight: 800;
+    padding: 5px 12px; border-radius: 6px;
+  }
+  .qv-cat {
+    font-size: 0.72rem; font-weight: 700;
+    letter-spacing: 3px; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 10px;
+  }
+  .qv-name {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(1rem, 2vw, 1.3rem);
+    font-weight: 700; line-height: 1.3;
+    margin-bottom: 12px;
+  }
+  .qv-stars { color: #ffc107; font-size: 0.9rem; margin-bottom: 16px; }
+  .qv-reviews { color: var(--text-muted); font-size: 0.78rem; margin-left: 6px; }
+  .qv-price-row {
+    display: flex; align-items: center; gap: 12px;
+    flex-wrap: wrap; margin-bottom: 20px;
+  }
+  .qv-price-new {
+    font-family: 'Orbitron', monospace;
+    font-size: 1.6rem; font-weight: 900;
+    color: var(--accent);
+  }
+  .qv-price-old {
+    font-size: 1rem; color: var(--text-muted);
+    text-decoration: line-through;
+  }
+  .qv-save {
+    background: rgba(0,230,118,0.1);
+    border: 1px solid rgba(0,230,118,0.2);
+    color: #00e676; font-size: 0.75rem;
+    font-weight: 700; padding: 3px 10px;
+    border-radius: 4px;
+  }
+  .qv-badges {
+    display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px;
+  }
+  .qv-badge {
+    background: rgba(0,229,255,0.06);
+    border: 1px solid rgba(0,229,255,0.15);
+    color: var(--text-muted);
+    font-size: 0.72rem; font-weight: 700;
+    padding: 5px 12px; border-radius: 6px;
+    display: inline-flex; align-items: center; gap: 5px;
+  }
+  .qv-badge i { color: var(--accent); }
+  .qv-label {
+    display: inline-block;
+    padding: 4px 12px; border-radius: 4px;
+    font-size: 0.7rem; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 1px;
+    margin-bottom: 16px;
+  }
+  .qv-label-new { background: rgba(0,229,255,0.12); color: var(--accent); border: 1px solid rgba(0,229,255,0.2); }
+  .qv-label-sale { background: rgba(229,57,53,0.12); color: #ef5350; border: 1px solid rgba(229,57,53,0.2); }
+  .qv-label-hot { background: rgba(255,152,0,0.12); color: #ff9800; border: 1px solid rgba(255,152,0,0.2); }
+  .qv-add-btn { width: 100%; text-align: center; justify-content: center; display: flex; }
+  @media (max-width: 640px) {
+    .qv-content { grid-template-columns: 1fr; }
+    .qv-box { padding: 24px 18px; }
+  }
+
+  /* ── SKELETON LOADER ── */
+  .skeleton-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px; overflow: hidden;
+  }
+  .skeleton-img {
+    height: 200px;
+    background: var(--bg-card2);
+  }
+  .skeleton-body { padding: 22px; }
+  .skeleton-line {
+    height: 12px; border-radius: 6px;
+    background: var(--bg-card2);
+    margin-bottom: 12px;
+  }
+  .skeleton-line.short { width: 40%; }
+  .skeleton-line.medium { width: 60%; }
+  .skeleton-btn {
+    height: 40px; border-radius: 8px;
+    background: var(--bg-card2);
+    margin-top: 4px;
+  }
+  @keyframes shimmer {
+    0% { opacity: 0.5; }
+    50% { opacity: 1; }
+    100% { opacity: 0.5; }
+  }
+  .skeleton-pulse { animation: shimmer 1.4s ease-in-out infinite; }
+
+  /* ── SCROLL REVEAL ── */
+  .reveal-card {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.45s ease, transform 0.45s ease;
+  }
+  .reveal-card.revealed {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ── CART QTY CONTROLS ── */
+  .cart-qty-ctrl {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 6px;
+  }
+  .qty-btn {
+    width: 24px; height: 24px;
+    border-radius: 6px;
+    background: rgba(0,229,255,0.08);
+    border: 1px solid rgba(0,229,255,0.2);
+    color: var(--accent);
+    font-size: 1rem; font-weight: 700;
+    cursor: pointer; transition: all 0.15s;
+    display: flex; align-items: center; justify-content: center;
+    line-height: 1;
+  }
+  .qty-btn:hover { background: rgba(0,229,255,0.2); }
+  .qty-num {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.82rem; font-weight: 700;
+    color: var(--text); min-width: 18px;
+    text-align: center;
+  }
+
+  /* ── BACK TO TOP ── */
+  #backToTop {
+    position: fixed;
+    bottom: 28px; right: 28px;
+    width: 46px; height: 46px;
+    background: linear-gradient(135deg, var(--accent), #00b8d9);
+    color: var(--bg-dark);
+    border: none; border-radius: 12px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    box-shadow: 0 0 20px rgba(0,229,255,0.3);
+    transition: all 0.3s;
+    opacity: 0; pointer-events: none;
+    z-index: 1500;
+    display: flex; align-items: center; justify-content: center;
+  }
+  #backToTop.visible { opacity: 1; pointer-events: all; }
+  #backToTop:hover { transform: translateY(-3px); box-shadow: 0 0 32px rgba(0,229,255,0.5); }
+
+  /* search-wrap backward compat (old inline style override) */
+  .search-wrap { max-width: 700px; margin: 0 auto 32px; }
+  @media (max-width: 640px) {
+    .sort-search-bar { flex-direction: column; }
+    .sort-select, .search-field-wrap { width: 100%; }
+  }
 </style>
 </head>
 <body>
@@ -808,30 +1116,36 @@
 </section>
 
 <!-- ─── PRODUCTS ─── -->
-<!-- Search Bar -->
-<div class="search-wrap" style="max-width:600px;margin:0 auto 32px;">
-  <div style="display:flex;gap:12px;align-items:center;">
-    <div style="position:relative;flex:1;">
-      <i class="fas fa-search" style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--text-muted);"></i>
-      <input type="text" id="searchInput" placeholder="Search products..." 
-        style="width:100%;background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:11px 14px 11px 40px;color:var(--text);font-family:'Syne',sans-serif;font-size:0.9rem;outline:none;"
-        oninput="searchProducts()">
+<!-- Search + Sort Bar -->
+<div class="container">
+  <div class="sort-search-bar">
+    <div class="search-field-wrap">
+      <i class="fas fa-search"></i>
+      <input type="text" id="searchInput" placeholder="Search products…" oninput="searchProducts()">
     </div>
-    <select id="minPrice" onchange="searchProducts()" style="background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:11px 14px;color:var(--text);font-family:'Syne',sans-serif;font-size:0.85rem;outline:none;">
+    <select id="minPrice" class="sort-select" onchange="searchProducts()">
       <option value="0">Min ₹0</option>
-      <option value="1000">₹1,000</option>
-      <option value="5000">₹5,000</option>
-      <option value="10000">₹10,000</option>
-      <option value="25000">₹25,000</option>
-      <option value="50000">₹50,000</option>
+      <option value="1000">₹1,000+</option>
+      <option value="5000">₹5,000+</option>
+      <option value="10000">₹10,000+</option>
+      <option value="25000">₹25,000+</option>
+      <option value="50000">₹50,000+</option>
     </select>
-    <select id="maxPrice" onchange="searchProducts()" style="background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:11px 14px;color:var(--text);font-family:'Syne',sans-serif;font-size:0.85rem;outline:none;">
-      <option value="999999">Max Any</option>
-      <option value="5000">₹5,000</option>
-      <option value="10000">₹10,000</option>
-      <option value="25000">₹25,000</option>
-      <option value="50000">₹50,000</option>
-      <option value="100000">₹1,00,000</option>
+    <select id="maxPrice" class="sort-select" onchange="searchProducts()">
+      <option value="999999">Max: Any</option>
+      <option value="5000">Up to ₹5K</option>
+      <option value="10000">Up to ₹10K</option>
+      <option value="25000">Up to ₹25K</option>
+      <option value="50000">Up to ₹50K</option>
+      <option value="100000">Up to ₹1L</option>
+    </select>
+    <select id="sortSelect" class="sort-select" onchange="setSort(this.value)">
+      <option value="default">✨ Featured</option>
+      <option value="price-asc">Price: Low → High</option>
+      <option value="price-desc">Price: High → Low</option>
+      <option value="rating-desc">⭐ Best Rated</option>
+      <option value="discount">🔥 Best Deals</option>
+      <option value="name-asc">A → Z</option>
     </select>
   </div>
 </div>
@@ -1015,9 +1329,9 @@
         <div class="footer-brand">KART<span>PRO</span></div>
         <p class="footer-desc">India's trusted electronics store since 2026. Genuine products, amazing prices.</p>
         <div class="footer-social mt-4">
-          <a href="https://www.facebook.com/share/1CiqPE5wkL/"><i class="fab fa-facebook-f"></i></a>
-          <a href="https://x.com/Mujahiddd_04"><i class="fab fa-twitter"></i></a>
-          <a href="https://www.instagram.com/mujahid_1.0x?igsh=NzJwODJkMzBmM3hs"><i class="fab fa-instagram"></i></a>
+          <a href="#"><i class="fab fa-facebook-f"></i></a>
+          <a href="#"><i class="fab fa-twitter"></i></a>
+          <a href=""><i class="fab fa-instagram"></i></a>
           <a href="#"><i class="fab fa-youtube"></i></a>
         </div>
       </div>
@@ -1068,6 +1382,9 @@
 
 <!-- Toast -->
 <div class="toast-msg" id="toast"></div>
+
+<!-- Back to Top -->
+<button id="backToTop" aria-label="Back to top"><i class="fas fa-arrow-up"></i></button>
 
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.min.js"></script>
