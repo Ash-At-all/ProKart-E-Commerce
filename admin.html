@@ -118,7 +118,43 @@ tr:hover td { background:rgba(0,229,255,0.03); }
 
 @media(max-width:768px) {
   .sidebar { width:60px; } .sidebar-brand, .nav-item span, .sidebar-footer .admin-name, .sidebar-footer .admin-role, .btn-logout { display:none; }
-  .main { margin-left:60px; } .stats-grid { grid-template-columns:1fr; } .form-grid { grid-template-columns:1fr; }
+  .main { margin-left:60px; padding:16px; } .stats-grid { grid-template-columns:1fr; } .form-grid { grid-template-columns:1fr; }
+}
+
+/* PRODUCT SEARCH */
+.prod-search-wrap {
+  position: relative;
+  margin-bottom: 18px;
+  max-width: 360px;
+}
+.prod-search-wrap i {
+  position: absolute; left: 12px; top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted); font-size: 0.82rem;
+  pointer-events: none;
+}
+.prod-search-input {
+  width: 100%;
+  background: rgba(0,0,0,0.3);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 9px 12px 9px 34px;
+  color: var(--text);
+  font-family: 'Syne', sans-serif;
+  font-size: 0.85rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.prod-search-input:focus { border-color: rgba(0,229,255,0.4); }
+.prod-search-input::placeholder { color: var(--muted); }
+
+/* Toast error variant */
+.toast.err { background:rgba(239,83,80,0.12); border-color:rgba(239,83,80,0.3); color:var(--red); }
+
+/* Responsive table */
+@media(max-width:600px) {
+  table { font-size: 0.78rem; }
+  th, td { padding: 8px 8px; }
 }
 </style>
 </head>
@@ -227,6 +263,12 @@ tr:hover td { background:rgba(0,229,255,0.03); }
     </div>
     <div class="card">
       <div class="card-title"><i class="fas fa-list"></i> All Products (<span id="prodCount">0</span>)</div>
+      <div class="prod-search-wrap">
+        <i class="fas fa-search"></i>
+        <input type="text" class="prod-search-input" id="prodSearch"
+          placeholder="Filter products by name or category…"
+          oninput="filterProdTable(this.value)">
+      </div>
       <div class="table-wrap">
         <table>
           <thead><tr><th>Image</th><th>Name</th><th>Category</th><th>Price</th><th>Rating</th><th>Actions</th></tr></thead>
@@ -368,27 +410,42 @@ async function initDashboard() {
 }
 
 // ── PRODUCTS ──
+let _allAdminProds = [];
+
 async function loadProducts() {
   try {
     const res = await fetch(`${API}/api/admin/products`, { headers: authHeaders() });
     const d = await res.json();
-    const prods = d.products || [];
-    document.getElementById('prodCount').textContent = prods.length;
-    const tb = document.getElementById('prodTable');
-    if (!prods.length) { tb.innerHTML = '<tr><td colspan="6" class="empty-row">No products found</td></tr>'; return; }
-    tb.innerHTML = prods.map(p => `
-      <tr>
-        <td><img src="${p.image || 'https://via.placeholder.com/40'}" class="prod-thumb" alt="${p.name}"></td>
-        <td style="font-weight:600;max-width:180px;">${p.name}</td>
-        <td><span class="badge badge-cat">${p.category}</span></td>
-        <td style="font-family:'Orbitron',monospace;color:var(--accent);">Rs.${(p.price||0).toLocaleString('en-IN')}</td>
-        <td style="color:#ffc107;">&#9733; ${p.rating || '—'}</td>
-        <td>
-          <button class="btn-edit" onclick='openEditModal(${JSON.stringify(p)})'><i class="fas fa-edit me-1"></i>Edit</button>
-          <button class="btn-del" onclick="deleteProduct(${p.id})"><i class="fas fa-trash me-1"></i>Delete</button>
-        </td>
-      </tr>`).join('');
+    _allAdminProds = d.products || [];
+    document.getElementById('prodCount').textContent = _allAdminProds.length;
+    renderProdTable(_allAdminProds);
   } catch(e) { toast('Failed to load products', true); }
+}
+
+function renderProdTable(prods) {
+  const tb = document.getElementById('prodTable');
+  if (!prods.length) { tb.innerHTML = '<tr><td colspan="6" class="empty-row">No products found</td></tr>'; return; }
+  tb.innerHTML = prods.map(p => `
+    <tr>
+      <td><img src="${p.image || 'https://via.placeholder.com/40'}" class="prod-thumb" alt="${p.name}" onerror="this.src='https://via.placeholder.com/40'"></td>
+      <td style="font-weight:600;max-width:180px;" title="${p.name}">${p.name.length > 32 ? p.name.substring(0,32)+'…' : p.name}</td>
+      <td><span class="badge badge-cat">${p.category}</span></td>
+      <td style="font-family:'Orbitron',monospace;color:var(--accent);">₹${(p.price||0).toLocaleString('en-IN')}</td>
+      <td style="color:#ffc107;">&#9733; ${p.rating || '—'}</td>
+      <td>
+        <button class="btn-edit" onclick='openEditModal(${JSON.stringify(p)})'><i class="fas fa-edit me-1"></i>Edit</button>
+        <button class="btn-del" onclick="deleteProduct(${p.id})"><i class="fas fa-trash me-1"></i>Del</button>
+      </td>
+    </tr>`).join('');
+}
+
+function filterProdTable(q) {
+  q = q.toLowerCase().trim();
+  if (!q) { renderProdTable(_allAdminProds); return; }
+  const filtered = _allAdminProds.filter(p =>
+    p.name.toLowerCase().includes(q) || p.category.toLowerCase().includes(q)
+  );
+  renderProdTable(filtered);
 }
 
 async function addProduct() {
