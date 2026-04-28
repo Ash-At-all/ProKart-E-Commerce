@@ -607,17 +607,6 @@ products = [
         "badge": ""
     },
     {
-        "id": 207,
-        "name": "EVOFOX One S Universal 3-Mode Wireless & Wired  Gamepad (Red, For PC, iOS, Android)",
-        "category": "accessories",
-        "price": 1649,
-        "original": 2299,
-        "rating": 5.0,
-        "image": "https://rukminim1.flixcart.com/image/1536/1536/xif0q/gamepad/wireless-wired-bluetooth/a/b/e/one-s-universal-3-mode-wireless-wired-evofox-original-imahm569kkspwxhq.jpeg?q=90",
-        "reviews": 200,
-        "badge": "Hot"
-    },
-    {
         "id": 206,
         "name": "Samsung Galaxy Watch 6",
         "category": "accessories",
@@ -627,7 +616,425 @@ products = [
         "image": "https://th.bing.com/th/id/OIP.T3j9bagPmorFAF84-LykzgHaEK?w=331&h=186&c=7&r=0&o=7&dpr=1.3&pid=1.7&rm=3",
         "reviews": 5600,
         "badge": "Sale"
-    }
+    },
+    {
+    "id": 401,
+    "name": "Razer DeathAdder V3 Gaming Mouse",
+    "category": "accessories",
+    "price": 5499,
+    "original": 6999,
+    "rating": 4.6,
+    "reviews": 11203,
+    "badge": "",
+    "image": "https://th.bing.com/th/id/OIP.wXoTNxiXoAgt7YmgLsz0FQHaEK?w=317&h=180&c=7&r=0&o=7&dpr=1.3&pid=1.7&rm=3"
+  },
+  {
+    "id": 402,
+    "name": "Logitech G502 X Gaming Mouse",
+    "category": "accessories",
+    "price": 6499,
+    "original": 8499,
+    "rating": 4.5,
+    "reviews": 8732,
+    "badge": "Sale",
+    "image": "https://th.bing.com/th/id/OIP.PUrULofeRMAkXPussQKhsgHaFj?w=246&h=184&c=7&r=0&o=7&dpr=1.3&pid=1.7&rm=3"
+  },
+  {
+    "id": 403,
+    "name": "HyperX Pulsefire Haste 2",
+    "category": "accessories",
+    "price": 3999,
+    "original": 5499,
+    "rating": 4.4,
+    "reviews": 5421,
+    "badge": "",
+    "image": "https://th.bing.com/th/id/OIP.AP7XJQXJ069iUfgB4Q7b2QHaEK?w=222&h=180&c=7&r=0&o=7&dpr=1.3&pid=1.7&rm=3"
+  },
+  {
+    "id": 404,
+    "name": "Keychron K2 Mechanical Keyboard",
+    "category": "accessories",
+    "price": 7499,
+    "original": 8999,
+    "rating": 4.5,
+    "reviews": 6321,
+    "badge": "",
+    "image": "https://th.bing.com/th/id/OIP.qcdW6TvlRH6a-eVeKfztbwHaEK?w=259&h=180&c=7&r=0&o=7&dpr=1.3&pid=1.7&rm=3"
+  },
+  {
+    "id": 405,
+    "name": "Razer BlackWidow V4 Keyboard",
+    "category": "accessories",
+    "price": 8999,
+    "original": 11999,
+    "rating": 4.6,
+    "reviews": 4231,
+    "badge": "Hot",
+    "image": "https://th.bing.com/th/id/OIP.x7r66iM8gTWrjmpLyDiyugHaEl?w=250&h=180&c=7&r=0&o=7&dpr=1.3&pid=1.7&rm=3"
+  },
+  {
+    "id": 406,
+    "name": "Cosmic Byte Firefly RGB Keyboard",
+    "category": "accessories",
+    "price": 1999,
+    "original": 2999,
+    "rating": 4.2,
+    "reviews": 19832,
+    "badge": "Sale",
+    "image": "https://th.bing.com/th/id/OIP.P3CW8vgII6GdHRsFVtZ_aQHaEl?w=253&h=180&c=7&r=0&o=7&dpr=1.3&pid=1.7&rm=3"
+  },
+  {
+    "id": 408,
+    "name": "Bose QuietComfort 45 Headphone",
+    "category": "audio",
+    "price": 24990,
+    "original": 32990,
+    "rating": 4.7,
+    "reviews": 8921,
+    "badge": "",
+    "image": "https://th.bing.com/th/id/OIP.IgjW4IKMj7s3nHKNHSWrFQHaJz?w=145&h=192&c=7&r=0&o=7&dpr=1.3&pid=1.7&rm=3"
+  },
+  {
+    "id": 409,
+    "name": "JBL Tune 770NC Headphone",
+    "category": "audio",
+    "price": 6999,
+    "original": 9999,
+    "rating": 4.3,
+    "reviews": 12043,
+    "badge": "Sale",
+    "image": "https://th.bing.com/th/id/OIP.m39DBOOCS-1LEbU7eKPe-AHaHa?w=186&h=186&c=7&r=0&o=7&dpr=1.3&pid=1.7&rm=3"
+  },
+  {
+    "id": 410,
+    "name": "boAt Rockerz 550 Headphone",
+    "category": "audio",
+    "price": 1799,
+    "original": 3990,
+    "rating": 4.1,
+    "reviews": 52341,
+    "badge": "Hot",
+    "image": "https://th.bing.com/th/id/OIP.c6v8dh4t_aaq7sKgKwo3tAHaHa?w=176&h=180&c=7&r=0&o=7&dpr=1.3&pid=1.7&rm=3"
+  },
+  {
+    "id": 411,
+    "name": "Apple Watch Series 9 45mm",
+    "category": "accessories",
+    "price": 44900,
+    "original": 48900,
+    "rating": 4.8,
+    "reviews": 9832,
+    "badge": "New",
+    "image": "https://th.bing.com/th/id/OIP.DVQRLVEKGaAFoTuADWolswHaIw?w=143&h=180&c=7&r=0&o=7&dpr=1.3&pid=1.7&rm=3"
+  },
+  {
+    "id": 412,
+    "name": "Samsung Galaxy Watch 6 Classic",
+    "category": "accessories",
+    "price": 32999,
+    "original": 39999,
+    "rating": 4.5,
+    "reviews": 6743,
+    "badge": "",
+    "image": "https://th.bing.com/th/id/OIP.ho3z735I9VvG3n99qY0biQHaIt?w=159&h=187&c=7&r=0&o=7&dpr=1.3&pid=1.7&rm=3"
+  },
+  {
+    "id": 413,
+    "name": "Noise ColorFit Pro 5 Smartwatch",
+    "category": "accessories",
+    "price": 3999,
+    "original": 6999,
+    "rating": 4.1,
+    "reviews": 28432,
+    "badge": "Sale",
+    "image": "https://th.bing.com/th/id/OIP.KXUW1AwYswYmJnYf6lge9gHaEK?w=297&h=180&c=7&r=0&o=7&dpr=1.3&pid=1.7&rm=3"
+  },
+  {
+    "id": 414,
+    "name": "Garmin Forerunner 255 Smartwatch",
+    "category": "accessories",
+    "price": 29999,
+    "original": 34999,
+    "rating": 4.6,
+    "reviews": 3421,
+    "badge": "",
+    "image": "https://th.bing.com/th/id/OIP.zW7w67tFegGdZaoMbGGQUQHaI_?w=152&h=185&c=7&r=0&o=7&dpr=1.3&pid=1.7&rm=3"
+  },
+  {
+    "id": 415,
+    "name": "Boat Wave Flex Smartwatch",
+    "category": "accessories",
+    "price": 1799,
+    "original": 3990,
+    "rating": 4.0,
+    "reviews": 41230,
+    "badge": "Hot",
+    "image": "https://th.bing.com/th/id/OIP.lMnAzynBMP7d_Mkl0QegoQHaEJ?w=301&h=180&c=7&r=0&o=7&dpr=1.3&pid=1.7&rm=3"
+  },
+  {
+    "name": "Samsung Galaxy F16 5G (Bling Black, 128 GB)",
+    "price": 13999,
+    "rating": 4.21,
+    "image": "https://rukminim2.flixcart.com/image/312/312/xif0q/mobile/b/6/n/-original-imahcqcwz7msj6rj.jpeg?q=70",
+    "category": "phones",
+    "original": 13999,
+    "reviews": 0,
+    "badge": "",
+    "id": 101
+  },
+  {
+    "name": "Samsung Galaxy F06 5G (Bahama Blue, 128 GB)",
+    "price": 14999,
+    "rating": 4.223,
+    "image": "https://rukminim2.flixcart.com/image/312/312/xif0q/mobile/v/o/d/-original-imahfvrmfkwybeyc.jpeg?q=70",
+    "category": "phones",
+    "original": 14999,
+    "reviews": 0,
+    "badge": "",
+    "id": 102
+  },
+  {
+    "name": "Samsung Galaxy F16 5G (Glam Green, 128 GB)",
+    "price": 13999,
+    "rating": 4.21,
+    "image": "https://rukminim2.flixcart.com/image/312/312/xif0q/mobile/z/6/a/-original-imahcrefkxrezmry.jpeg?q=70",
+    "category": "phones",
+    "original": 13999,
+    "reviews": 0,
+    "badge": "",
+    "id": 103
+  },
+  {
+    "name": "Samsung Galaxy F16 5G (Glam Green, 128 GB)",
+    "price": 15499,
+    "rating": 4.23,
+    "image": "https://rukminim2.flixcart.com/image/312/312/xif0q/mobile/g/a/j/-original-imahcqcwhvvxsrgd.jpeg?q=70",
+    "category": "phones",
+    "original": 15499,
+    "reviews": 0,
+    "badge": "",
+    "id": 104
+  },
+  {
+    "name": "Tecno Pova Curve 5G (Neon Cyan, 128 GB)",
+    "price": 17999,
+    "rating": 4.41,
+    "image": "https://rukminim2.flixcart.com/image/312/312/xif0q/mobile/m/y/n/-original-imahctmx6yhzhghw.jpeg?q=70",
+    "category": "phones",
+    "original": 17999,
+    "reviews": 0,
+    "badge": "",
+    "id": 105
+  },
+  {
+    "name": "realme 15T 5G (Silk Blue, 128 GB)",
+    "price": 22999,
+    "rating": 4.37,
+    "image": "https://rukminim2.flixcart.com/image/312/312/xif0q/mobile/p/6/5/-original-imahfkfyshxg28wu.jpeg?q=70",
+    "category": "phones",
+    "original": 22999,
+    "reviews": 0,
+    "badge": "",
+    "id": 106
+  },
+  {
+    "name": "Samsung Galaxy F17 5G (Neo Black, 128 GB)",
+    "price": 19499,
+    "rating": 4.3141,
+    "image": "https://rukminim2.flixcart.com/image/312/312/xif0q/mobile/r/b/h/-original-imahftgfzdzfpgft.jpeg?q=70",
+    "category": "phones",
+    "original": 19499,
+    "reviews": 0,
+    "badge": "",
+    "id": 107
+  },
+  {
+    "name": "Samsung Galaxy F17 5G (Violet Pop, 128 GB)",
+    "price": 17999,
+    "rating": 4.2154,
+    "image": "https://rukminim2.flixcart.com/image/312/312/xif0q/mobile/h/b/h/-original-imahftgfjn6a9kpw.jpeg?q=70",
+    "category": "phones",
+    "original": 17999,
+    "reviews": 0,
+    "badge": "",
+    "id": 108
+  },
+  {
+    "name": "Coming Soon",
+    "price": 16999,
+    "rating": 4.347,
+    "image": "https://rukminim2.flixcart.com/image/312/312/l0igvww0/mobile/y/j/4/-original-imagcaaw4d7bv7pj.jpeg?q=70",
+    "category": "phones",
+    "original": 16999,
+    "reviews": 0,
+    "badge": "",
+    "id": 109
+  },
+  {
+    "name": "Samsung Galaxy F17 5G (Violet Pop, 128 GB)",
+    "price": 18720,
+    "rating": 4.3141,
+    "image": "https://rukminim2.flixcart.com/image/312/312/xif0q/mobile/h/b/h/-original-imahftgfjn6a9kpw.jpeg?q=70",
+    "category": "phones",
+    "original": 18720,
+    "reviews": 0,
+    "badge": "",
+    "id": 110
+  },
+  {
+    "name": "Samsung Galaxy F17 5G (Neo Black, 128 GB)",
+    "price": 17999,
+    "rating": 4.2154,
+    "image": "https://rukminim2.flixcart.com/image/312/312/xif0q/mobile/r/b/h/-original-imahftgfzdzfpgft.jpeg?q=70",
+    "category": "phones",
+    "original": 17999,
+    "reviews": 0,
+    "badge": "",
+    "id": 111
+  },
+  {
+    "name": "realme 15T 5G (Silk Blue, 128 GB)",
+    "price": 26999,
+    "rating": 4.37,
+    "image": "https://rukminim2.flixcart.com/image/312/312/xif0q/mobile/f/t/7/-original-imahhy8pvryffj5p.jpeg?q=70",
+    "category": "phones",
+    "original": 26999,
+    "reviews": 0,
+    "badge": "",
+    "id": 112
+  },
+  {
+    "name": "Coming Soon",
+    "price": 14999,
+    "rating": 4.478,
+    "image": "https://rukminim2.flixcart.com/image/312/312/xif0q/mobile/k/u/n/-original-imagzjhwtfthcmzz.jpeg?q=70",
+    "category": "phones",
+    "original": 14999,
+    "reviews": 0,
+    "badge": "",
+    "id": 113
+  },
+  {
+    "name": "Coming Soon",
+    "price": 12999,
+    "rating": 4.44,
+    "image": "https://rukminim2.flixcart.com/image/312/312/xif0q/mobile/4/h/e/-original-imagzjhwmsamexfk.jpeg?q=70",
+    "category": "phones",
+    "original": 12999,
+    "reviews": 0,
+    "badge": "",
+    "id": 114
+  },
+  {
+    "name": "Coming Soon",
+    "price": 16999,
+    "rating": 4.347,
+    "image": "https://rukminim2.flixcart.com/image/312/312/l0igvww0/mobile/o/q/q/-original-imagcaaw5zg6amp5.jpeg?q=70",
+    "category": "phones",
+    "original": 16999,
+    "reviews": 0,
+    "badge": "",
+    "id": 115
+  },
+  {
+    "name": "Samsung Galaxy F14 5G (GOAT Green, 128 GB)",
+    "price": 18490,
+    "rating": 4.21,
+    "image": "https://rukminim2.flixcart.com/image/312/312/xif0q/mobile/g/n/k/-original-imagtyxb86ddjhzh.jpeg?q=70",
+    "category": "phones",
+    "original": 18490,
+    "reviews": 0,
+    "badge": "",
+    "id": 116
+  },
+  {
+    "name": "Samsung Galaxy F17 5G (Violet Pop, 128 GB)",
+    "price": 21950,
+    "rating": 4.0,
+    "image": "https://rukminim2.flixcart.com/image/312/312/xif0q/mobile/d/s/c/-original-imahfvrhbvhfccp2.jpeg?q=70",
+    "category": "phones",
+    "original": 21950,
+    "reviews": 0,
+    "badge": "",
+    "id": 117
+  },
+  {
+    "name": "Coming Soon",
+    "price": 15999,
+    "rating": 4.41,
+    "image": "https://rukminim2.flixcart.com/image/312/312/xif0q/mobile/u/1/h/-original-imagpfbvfu4p55n4.jpeg?q=70",
+    "category": "phones",
+    "original": 15999,
+    "reviews": 0,
+    "badge": "",
+    "id": 118
+  },
+  {
+    "name": "Motorola Edge 40 Neo (Black Beauty, 128 GB)",
+    "price": 27999,
+    "rating": 4.36,
+    "image": "https://rukminim2.flixcart.com/image/312/312/xif0q/mobile/p/r/r/edge-40-neo-payj0002in-motorola-original-imagtkzh8zrvp3uj.jpeg?q=70",
+    "category": "phones",
+    "original": 27999,
+    "reviews": 0,
+    "badge": "",
+    "id": 119
+  },
+  {
+    "name": "Coming Soon",
+    "price": 18999,
+    "rating": 4.334,
+    "image": "https://rukminim2.flixcart.com/image/312/312/l0igvww0/mobile/9/a/w/-original-imagcaaw5gzbdtxj.jpeg?q=70",
+    "category": "phones",
+    "original": 18999,
+    "reviews": 0,
+    "badge": "",
+    "id": 120
+  },
+  {
+    "name": "Google Pixel 10 Pro (Moonstone, 256 GB)",
+    "price": 109999,
+    "rating": 4.6448,
+    "image": "https://rukminim2.flixcart.com/image/312/312/xif0q/mobile/6/o/a/-original-imahfjsfumzzvyzz.jpeg?q=70",
+    "category": "phones",
+    "original": 109999,
+    "reviews": 0,
+    "badge": "",
+    "id": 121
+  },
+  {
+    "name": "vivo T2x 5G (Marine Blue, 128 GB)",
+    "price": 12999,
+    "rating": 4.44,
+    "image": "https://rukminim2.flixcart.com/image/312/312/xif0q/mobile/k/u/n/-original-imagzjhwtfthcmzz.jpeg?q=70",
+    "category": "phones",
+    "original": 12999,
+    "reviews": 0,
+    "badge": "",
+    "id": 122
+  },
+  {
+    "name": "vivo T2x 5G (Aurora Gold, 128 GB)",
+    "price": 14999,
+    "rating": 4.478,
+    "image": "https://rukminim2.flixcart.com/image/312/312/xif0q/mobile/c/s/x/-original-imagzjhwaaewgj8r.jpeg?q=70",
+    "category": "phones",
+    "original": 14999,
+    "reviews": 0,
+    "badge": "",
+    "id": 123
+  },
+  {
+    "name": "Coming Soon",
+    "price": 18999,
+    "rating": 4.334,
+    "image": "https://rukminim2.flixcart.com/image/312/312/l0igvww0/mobile/y/j/4/-original-imagcaaw4d7bv7pj.jpeg?q=70",
+    "category": "phones",
+    "original": 18999,
+    "reviews": 0,
+    "badge": "",
+    "id": 124
+  }
 ]
 
 import os
@@ -661,3 +1068,5 @@ except Exception as e:
     print(f"⚠️ Scraped data load nahi hua: {e}")
 
 print(f"Total products: {len(products)}")
+
+
