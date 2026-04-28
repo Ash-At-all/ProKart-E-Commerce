@@ -522,6 +522,35 @@
     .step-line { width: 40px; }
     .checkout-steps { gap: 0; }
   }
+
+  /* Valid field state */
+  .form-input.valid {
+    border-color: var(--success);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2300e676' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 36px;
+  }
+  /* Char hint */
+  .char-hint {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    margin-top: 4px;
+    text-align: right;
+  }
+  /* Back to top */
+  #backToTop {
+    position: fixed; bottom: 28px; right: 28px;
+    width: 46px; height: 46px;
+    background: linear-gradient(135deg, var(--accent), #00b8d9);
+    color: var(--bg-dark); border: none; border-radius: 12px;
+    font-size: 1.1rem; cursor: pointer;
+    box-shadow: 0 0 20px rgba(0,229,255,0.3);
+    transition: all 0.3s; opacity: 0; pointer-events: none;
+    z-index: 1500; display: flex; align-items: center; justify-content: center;
+  }
+  #backToTop.visible { opacity: 1; pointer-events: all; }
+  #backToTop:hover { transform: translateY(-3px); }
 </style>
 </head>
 <body>
@@ -535,6 +564,11 @@
     </a>
   </div>
 </nav>
+
+<!-- Back to Top -->
+<button id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Back to top">
+  <i class="fas fa-arrow-up"></i>
+</button>
 
 <!-- ── PROGRESS STEPS ── -->
 <div class="container">
@@ -604,7 +638,11 @@
             <div class="col-12">
               <div class="form-group">
                 <label class="form-label-custom">Street Address *</label>
-                <input type="text" class="form-input" id="address" placeholder="House No, Street, Area">
+                <input type="text" class="form-input" id="address"
+                  placeholder="House No, Street, Area"
+                  oninput="validateField(this, v => v.trim().length >= 5, 'err-address'); updateCharHint('address', 80)"
+                  maxlength="80">
+                <div class="char-hint" id="charHint-address"></div>
                 <div class="error-msg" id="err-address">Please enter your address</div>
               </div>
             </div>
@@ -1018,7 +1056,7 @@ function validate() {
   return ok;
 }
 
-// Clear error on input
+// Clear error on input + live validation
 document.querySelectorAll('.form-input').forEach(el => {
   el.addEventListener('input', function() {
     this.classList.remove('error');
@@ -1027,6 +1065,27 @@ document.querySelectorAll('.form-input').forEach(el => {
     if (errEl) errEl.style.display = 'none';
   });
 });
+
+// Live field validator for real-time green checkmark
+function validateField(el, testFn, errId) {
+  if (testFn(el.value)) {
+    el.classList.remove('error');
+    el.classList.add('valid');
+    const errEl = document.getElementById(errId);
+    if (errEl) errEl.style.display = 'none';
+  } else {
+    el.classList.remove('valid');
+  }
+}
+
+// Character counter hint
+function updateCharHint(fieldId, max) {
+  const el = document.getElementById(fieldId);
+  const hintEl = document.getElementById('charHint-' + fieldId);
+  if (!el || !hintEl) return;
+  const rem = max - el.value.length;
+  hintEl.textContent = rem < max ? `${rem} characters remaining` : '';
+}
 
 // ── PLACE ORDER ───────────────────────────────────────────
 // ── PLACE ORDER ───────────────────────────────────────────
@@ -1130,6 +1189,14 @@ function showToast(msg) {
 
 // ── INIT ──────────────────────────────────────────────────
 loadCart();
+
+// Back to top
+const _btt = document.getElementById('backToTop');
+if (_btt) {
+  window.addEventListener('scroll', () => {
+    _btt.classList.toggle('visible', window.scrollY > 300);
+  }, { passive: true });
+}
 </script>
 </body>
 </html>
