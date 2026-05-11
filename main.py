@@ -11,7 +11,7 @@ import bcrypt as _bcrypt
 from datetime import datetime, timedelta
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
-from mongo import cart_collection, user_collection, products_collection, orders_collection, db
+from mongo import cart_collection,user_collection,products_collection,orders_collection,nova_conversations
 import os
 from dotenv import load_dotenv
 
@@ -337,7 +337,7 @@ async def get_stats():
 
 @app.post("/save-conversation")
 async def save_conversation(data: dict):
-    db["nova_conversations"].insert_one({
+    nova_conversations.insert_one({
         "question": data.get("question"),
         "answer": data.get("answer"),
         "model": data.get("model"),

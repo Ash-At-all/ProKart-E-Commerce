@@ -15,5 +15,6 @@ cart_collection = db["cart"]
 user_collection = db["users"]
 products_collection = db["products"]
 orders_collection = db["orders"]
+nova_conversations = db["nova_conversations"]
 
 
