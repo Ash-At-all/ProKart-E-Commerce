@@ -86,7 +86,7 @@ function buildProductCard(p) {
         </div>
         <div class="product-info">
           <div class="product-category">${p.category.toUpperCase()}</div>
-          <div class="product-name" title="${p.name}">${p.name}</div>
+          <a href="product.html?id=${p.id}" class="product-name" style="text-decoration:none;color:var(--text);display:block;" title="${p.name}">${p.name}</a>
           <div class="product-rating">
             ${stars}
             <span>(${(p.reviews || 0).toLocaleString()})</span>
@@ -98,6 +98,9 @@ function buildProductCard(p) {
           <button class="btn-cart" id="btn-${p.id}" onclick="addToCart(${p.id})">
             <i class="fas fa-shopping-cart me-2"></i>Add to Cart
           </button>
+          <a href="product.html?id=${p.id}" style="display:block;text-align:center;margin-top:8px;font-size:0.75rem;color:var(--text-muted);text-decoration:none;font-weight:600;transition:color 0.2s;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--text-muted)'">
+            View Details <i class="fas fa-arrow-right" style="font-size:0.65rem;"></i>
+          </a>
         </div>
       </div>
     </div>`;
