@@ -3,13 +3,15 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
 import uvicorn
+from datetime import datetime
+
 
 from jose import jwt, JWTError
 import bcrypt as _bcrypt
 from datetime import datetime, timedelta
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
-from mongo import cart_collection, user_collection, products_collection, orders_collection
+from mongo import cart_collection,user_collection,products_collection,orders_collection,nova_conversations
 import os
 from dotenv import load_dotenv
 
@@ -333,6 +335,15 @@ async def get_stats():
         "reviews": 18392
     }
 
+@app.post("/save-conversation")
+async def save_conversation(data: dict):
+    nova_conversations.insert_one({
+        "question": data.get("question"),
+        "answer": data.get("answer"),
+        "model": data.get("model"),
+        "timestamp": datetime.utcnow()
+    })
+    return {"status": "saved"}
 # ================= RUN =================
 if __name__ == "__main__":
     print("SECRET:", SECRET_KEY)
