@@ -1,6 +1,7 @@
 from pymongo import MongoClient
 import os
 from dotenv import load_dotenv
+from datetime import datetime
 
 load_dotenv()
 
@@ -14,5 +15,6 @@ cart_collection = db["cart"]
 user_collection = db["users"]
 products_collection = db["products"]
 orders_collection = db["orders"]
+nova_conversations = db["nova_conversations"]
 
 
